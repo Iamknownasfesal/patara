@@ -1,0 +1,37 @@
+{
+  "name": "patara-sdk",
+  "version": "0.0.1",
+  "description": "Patara SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "bun run scripts/build.mjs",
+    "prepublishOnly": "bun run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/lodash": "^4.17.7",
+    "@types/react": "^18.3.4",
+    "bun-plugin-dts": "^0.2.3",
+    "typescript": "^5.5.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@mysten/sui": "^1.7.0",
+    "@patara-app/dca-sdk": "^1.0.5",
+    "@sonarwatch/portfolio-core": "^0.12.155",
+    "@sonarwatch/token-lists": "^1.22.64",
+    "@suiet/wallet-kit": "^0.3.2",
+    "@tanstack/react-query": "^5.52.2",
+    "bignumber.js": "^9.1.2",
+    "lodash": "^1.0.0",
+    "react": "^18.3.1",
+    "tiny-invariant": "^1.3.3",
+    "zod": "^3.23.8"
+  }
+}
