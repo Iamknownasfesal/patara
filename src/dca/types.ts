@@ -1,5 +1,5 @@
-import type { SuiClient } from "@mysten/sui/client";
-import { z } from "zod";
+import type { SuiClient } from '@mysten/sui/client';
+import { z } from 'zod';
 
 export const DCAOObjectsSchema = z.array(
   z.object({
@@ -79,7 +79,8 @@ export type StopAndDestroyParams = {
   coinOutType: string;
   dca: string;
 };
-const ParsedDCAObjectSchema = z.object({
+
+export const ParsedDCAObjectSchema = z.object({
   ...DCAOObjectsSchema.element.shape,
   sellInfo: z.any(),
   buyInfo: z.any(),
@@ -98,7 +99,7 @@ const ParsedDCAObjectSchema = z.object({
 
 export type ParsedDCAObject = z.infer<typeof ParsedDCAObjectSchema>;
 
-const ParsedDCAOrderSchema = z.object({
+export const ParsedDCAOrderSchema = z.object({
   ...DCAOrderSchema.element.shape,
   sellInfo: z.any(),
   buyInfo: z.any(),

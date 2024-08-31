@@ -1,9 +1,6 @@
-import type { CoinStruct } from "@mysten/sui/client";
-import {
-  Transaction,
-  type TransactionObjectArgument,
-} from "@mysten/sui/transactions";
-import type { MergeCoinArgs } from "../types";
+import { type TransactionObjectArgument } from '@mysten/sui/transactions';
+
+import type { MergeCoinArgs } from '../types';
 
 /**
  * Merges provided coins into a single transaction block.
@@ -17,7 +14,7 @@ export function mergeCoins({
   coins,
 }: MergeCoinArgs): TransactionObjectArgument {
   if (coins.length === 0) {
-    throw new Error("No coins provided to merge");
+    throw new Error('No coins provided to merge');
   }
 
   const [firstCoin, ...otherCoins] = coins;

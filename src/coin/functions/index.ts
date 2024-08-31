@@ -1,3 +1,3 @@
-export * from "./getCoins";
-export * from "./getPrice";
-export * from "./mergeCoins";
+export * from './getCoins';
+export * from './getPrice';
+export * from './mergeCoins';

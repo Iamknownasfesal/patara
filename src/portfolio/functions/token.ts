@@ -1,25 +1,25 @@
-import type { CoinMetadata } from "@mysten/sui/client";
-import type { TokenInfo } from "@sonarwatch/portfolio-core";
-import SuiTokenList from "@sonarwatch/token-lists/build/sonarwatch.sui.tokenlist.json";
+import type { CoinMetadata } from '@mysten/sui/client';
+import type { TokenInfo } from '@sonarwatch/portfolio-core';
+import SuiTokenList from '@sonarwatch/token-lists/build/sonarwatch.sui.tokenlist.json';
 
 const DEFAULT_TOKEN_INFO: TokenInfo = {
-  name: "Unknown",
-  symbol: "UNK",
+  name: 'Unknown',
+  symbol: 'UNK',
   decimals: 18,
-  networkId: "sui",
-  address: "0x0",
+  networkId: 'sui',
+  address: '0x0',
   extensions: {},
-  logoURI: "",
+  logoURI: '',
   tags: [],
 };
 
 const SUITABLE_TOKEN: CoinMetadata = {
-  name: "SUITABLE",
-  symbol: "TABLE",
+  name: 'SUITABLE',
+  symbol: 'TABLE',
   decimals: 9,
-  description: "Suitable",
+  description: 'Suitable',
   iconUrl:
-    "https://tablesui.xyz/wp-content/uploads/2024/02/tablelogo200x200.png",
+    'https://tablesui.xyz/wp-content/uploads/2024/02/tablelogo200x200.png',
 };
 
 export function getTokenInfo(
@@ -29,7 +29,7 @@ export function getTokenInfo(
   const token = tokenInfo[address];
   if (token) return token;
 
-  address = address.replaceAll("-", "::");
+  address = address.replaceAll('-', '::');
 
   const suiToken = SuiTokenList.tokens.find(
     (token) => token.address === address
@@ -38,7 +38,7 @@ export function getTokenInfo(
   if (suiToken) {
     return {
       ...suiToken,
-      networkId: "sui",
+      networkId: 'sui',
     };
   }
 
@@ -54,7 +54,7 @@ export function getTokenInfoFromMetadata(
 ): CoinMetadata {
   if (
     address ===
-    "0x93c5b75322b5f9fc194e16d869b30a1db8d1f1826b2371c776c21c3d6a375b10::suitable::SUITABLE"
+    '0x93c5b75322b5f9fc194e16d869b30a1db8d1f1826b2371c776c21c3d6a375b10::suitable::SUITABLE'
   ) {
     return SUITABLE_TOKEN;
   }
@@ -82,7 +82,7 @@ export function getTokenInfoFromMetadata(
     ),
     description: parseSafe(
       tokenFromTokenInfo?.description,
-      "",
+      '',
       DEFAULT_TOKEN_INFO.name
     ),
     iconUrl: parseSafe(
@@ -92,8 +92,8 @@ export function getTokenInfoFromMetadata(
     ),
   };
 
-  if (result.iconUrl?.includes("USDC")) {
-    result.iconUrl = result.iconUrl.replace("png", "webp");
+  if (result.iconUrl?.includes('USDC')) {
+    result.iconUrl = result.iconUrl.replace('png', 'webp');
   }
 
   return result;
@@ -106,13 +106,13 @@ function parseSafe<T>(
 ): T {
   if (
     primaryValue &&
-    typeof primaryValue === "string" &&
+    typeof primaryValue === 'string' &&
     primaryValue.length > 0
   )
     return primaryValue;
   if (
     secondaryValue &&
-    typeof secondaryValue === "string" &&
+    typeof secondaryValue === 'string' &&
     secondaryValue.length > 0
   )
     return secondaryValue;

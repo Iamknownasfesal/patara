@@ -6,16 +6,37 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "bun run scripts/build.mjs",
-    "prepublishOnly": "bun run build"
+    "prepublishOnly": "bun run build",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json}\"",
+    "lint": "eslint src",
+    "prepare": "husky"
   },
   "files": [
     "dist"
   ],
   "devDependencies": {
+    "@commitlint/cli": "^19.4.1",
+    "@commitlint/config-conventional": "^19.4.1",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.9.1",
     "@types/bun": "latest",
     "@types/lodash": "^4.17.7",
     "@types/react": "^18.3.4",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
     "bun-plugin-dts": "^0.2.3",
+    "eslint": "^9.9.1",
+    "eslint-config-next": "14.2.7",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.f6.2",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "husky": "^9.1.5",
+    "prettier": "^3.3.3",
+    "prettier-eslint": "^16.3.0",
     "typescript": "^5.5.4"
   },
   "peerDependencies": {

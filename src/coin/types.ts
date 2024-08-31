@@ -1,6 +1,6 @@
-import type { SuiClient } from "@mysten/sui/client";
-import { Transaction } from "@mysten/sui/transactions";
-import type { CoinStruct } from "@mysten/sui/client";
+import type { SuiClient } from '@mysten/sui/client';
+import type { CoinStruct } from '@mysten/sui/client';
+import { Transaction } from '@mysten/sui/transactions';
 
 export type CoinArgs = {
   coin: string;
@@ -12,7 +12,7 @@ export type CoinWithDecimalsArgs = CoinArgs & {
   decimals: number;
 };
 
-export type MultiCoinArgs = Omit<CoinWithDecimalsArgs, "coin"> & {
+export type MultiCoinArgs = Omit<CoinWithDecimalsArgs, 'coin'> & {
   coins: string[];
 };
 

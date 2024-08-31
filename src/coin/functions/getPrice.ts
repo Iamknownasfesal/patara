@@ -1,6 +1,6 @@
-import { FULL_SUI_COIN_TYPE, SUI_COIN_TYPE } from "../../constants";
-import { API_BASE_URL } from "../constants";
-import type { PriceResponse } from "../types";
+import { FULL_SUI_COIN_TYPE, SUI_COIN_TYPE } from '../../constants';
+import { API_BASE_URL } from '../constants';
+import type { PriceResponse } from '../types';
 
 export async function getPrice(type: string): Promise<number> {
   try {
@@ -8,7 +8,7 @@ export async function getPrice(type: string): Promise<number> {
     const result = await fetchPrice(normalizedType);
     return result[normalizedType].price;
   } catch (error) {
-    console.error("Failed to fetch price", error);
+    console.error('Failed to fetch price', error);
     return 0;
   }
 }
@@ -20,7 +20,7 @@ function normalizeCoinType(type: string): string {
 async function fetchPrice(coinType: string): Promise<PriceResponse> {
   const url = `${API_BASE_URL}/[%22${coinType}%22]`;
   const response = await fetch(url, {
-    headers: { Accept: "application/json" },
+    headers: { Accept: 'application/json' },
   });
   return response.json();
 }

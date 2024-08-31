@@ -1,15 +1,16 @@
-import BigNumber from "bignumber.js";
-import { getTokenInfoFromMetadata } from "../portfolio/functions/token";
-import type { CoinMetadataMap } from "../types";
-import { BASE_URL } from "./constants";
+import BigNumber from 'bignumber.js';
+
+import { getTokenInfoFromMetadata } from '../portfolio/functions/token';
+import type { CoinMetadataMap } from '../types';
+import { BASE_URL } from './constants';
 import {
-  DCAOObjectsSchema,
   type DCAObject,
+  DCAOObjectsSchema,
   type DCAOrder,
   DCAOrderSchema,
   type ParsedDCAObject,
   type ParsedDCAOrder,
-} from "./types";
+} from './types';
 
 async function fetchAndParse<T>(
   url: string,
@@ -146,12 +147,12 @@ function calculateExchangeRate(
 }
 
 function formatOrderDate(timestampMs: number): string {
-  return new Date(timestampMs).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "numeric",
-    year: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
+  return new Date(timestampMs).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'numeric',
+    year: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 }
 
@@ -235,11 +236,11 @@ function calculateTotalDeposited(dca: DCAObject, sellInfo: any): string {
 }
 
 function formatDate(timestamp: number): string {
-  return new Date(timestamp * 1000).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+  return new Date(timestamp * 1000).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 }

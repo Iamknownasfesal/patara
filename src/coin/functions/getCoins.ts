@@ -1,6 +1,7 @@
-import { type CoinStruct } from "@mysten/sui/client";
-import invariant from "tiny-invariant";
-import type { CoinArgs, CoinWithDecimalsArgs, MultiCoinArgs } from "../types";
+import { type CoinStruct } from '@mysten/sui/client';
+import invariant from 'tiny-invariant';
+
+import type { CoinArgs, CoinWithDecimalsArgs, MultiCoinArgs } from '../types';
 
 export async function getCoins(params: CoinArgs): Promise<CoinStruct[]> {
   return fetchAllCoins(params);
@@ -10,7 +11,7 @@ export async function getCoinsAndNormalizeWithDecimals(
   params: CoinWithDecimalsArgs
 ) {
   const { coin, address, provider, decimals } = params;
-  invariant(address, "Address is required to get coins");
+  invariant(address, 'Address is required to get coins');
 
   const coinStructs = await fetchAllCoins({ coin, address, provider });
   const balance = calculateTotalBalance(coinStructs);

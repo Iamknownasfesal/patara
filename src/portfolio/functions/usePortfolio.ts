@@ -1,14 +1,15 @@
-import { SuiClient } from "@mysten/sui/client";
-import type { FetchersResult, TokenInfo } from "@sonarwatch/portfolio-core";
-import { useQuery } from "@tanstack/react-query";
-import invariant from "tiny-invariant";
-import { getTokenInfo } from "./token";
-import { getCoinMetadataMap } from "./getCoinMetadataMap";
-import { PORTFOLIO_API_BASE_URL } from "../constants";
+import { SuiClient } from '@mysten/sui/client';
+import type { FetchersResult, TokenInfo } from '@sonarwatch/portfolio-core';
+import { useQuery } from '@tanstack/react-query';
+import invariant from 'tiny-invariant';
+
+import { PORTFOLIO_API_BASE_URL } from '../constants';
+import { getCoinMetadataMap } from './getCoinMetadataMap';
+import { getTokenInfo } from './token';
 
 export function usePortfolio(address: string, client: SuiClient) {
   return useQuery({
-    queryKey: ["suiPortfolio", address],
+    queryKey: ['suiPortfolio', address],
     queryFn: () => fetchSuiPortfolio(address, client),
   });
 }
@@ -17,16 +18,16 @@ async function fetchSuiPortfolio(
   address: string,
   client: SuiClient
 ): Promise<FetchersResult> {
-  invariant(address, "Address is required");
-  invariant(client, "Client is required");
+  invariant(address, 'Address is required');
+  invariant(client, 'Client is required');
 
   const response = await fetch(`${PORTFOLIO_API_BASE_URL}/sui/v1/${address}`);
   if (!response.ok) {
-    throw new Error("Failed to fetch portfolio");
+    throw new Error('Failed to fetch portfolio');
   }
   let data: FetchersResult = await response.json();
 
-  const tokenInfo = data.tokenInfo?.["sui"] as
+  const tokenInfo = data.tokenInfo?.['sui'] as
     | Record<string, TokenInfo>
     | undefined;
   if (!tokenInfo) {
@@ -57,13 +58,13 @@ function getTokensToFetch(
 ): Set<string> {
   const tokensToFetch = new Set<string>();
   data.elements.forEach((element) => {
-    if (element.type === "multiple" && element.data.assets.length > 0) {
+    if (element.type === 'multiple' && element.data.assets.length > 0) {
       element.data.assets.forEach((asset) => {
         if (
-          asset.type === "token" &&
-          getTokenInfo(tokenInfo, asset.data.address).name === "Unknown"
+          asset.type === 'token' &&
+          getTokenInfo(tokenInfo, asset.data.address).name === 'Unknown'
         ) {
-          const address = asset.data.address.replaceAll("-", "::");
+          const address = asset.data.address.replaceAll('-', '::');
           tokensToFetch.add(address);
         }
       });
@@ -81,14 +82,14 @@ async function updateTokenInfo(
   const newTokenInfo = { ...existingTokenInfo };
 
   Object.entries(coinMetadataMap).forEach(([address, metadata]) => {
-    const formattedAddress = address.replaceAll("::", "-");
+    const formattedAddress = address.replaceAll('::', '-');
     newTokenInfo[formattedAddress] = {
       address: formattedAddress,
       name: metadata.name,
       symbol: metadata.symbol,
       decimals: metadata.decimals,
-      logoURI: metadata.iconUrl || "",
-      networkId: "sui",
+      logoURI: metadata.iconUrl || '',
+      networkId: 'sui',
     };
   });
 

@@ -1,5 +1,5 @@
-import { type CoinMetadata, SuiClient } from "@mysten/sui/client";
-import { normalizeStructTag } from "@mysten/sui/utils";
+import { type CoinMetadata, SuiClient } from '@mysten/sui/client';
+import { normalizeStructTag } from '@mysten/sui/utils';
 
 export const getCoinMetadataMap = async (
   suiClient: SuiClient,
@@ -31,4 +31,4 @@ export const getCoinMetadataMap = async (
 };
 
 const extractSymbolFromCoinType = (coinType: string) =>
-  coinType.split("::").at(-1);
+  coinType.split('::').at(-1);
