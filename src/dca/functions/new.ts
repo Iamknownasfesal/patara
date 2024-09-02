@@ -6,7 +6,7 @@ import {
 
 import { getCoins, mergeCoins } from '../../coin';
 import { FULL_SUI_COIN_TYPE } from '../../constants';
-import { DCASDK, DELEGATEE, WITNESS_TYPE } from '../constants';
+import { DCASDK, DELEGATEE, FEE_RATE, WITNESS_TYPE } from '../constants';
 import type { DCAParams } from '../types';
 
 async function prepareCoinIn(
@@ -58,6 +58,7 @@ export async function newDCA({
     max,
     min,
     tx: transaction,
+    fee: FEE_RATE,
     witnessType: WITNESS_TYPE,
   });
 
