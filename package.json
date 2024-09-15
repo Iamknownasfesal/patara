@@ -1,12 +1,20 @@
 {
   "name": "@patara-app/patara-sdk",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Patara SDK",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "clean": "rimraf dist && rimraf tsconfig.prod.tsbuildinfo && rimraf tsconfig.tsbuildinfo",
-    "build:tsup": "tsup './src/dca/index.ts' --format esm,cjs --sourcemap",
+    "build:tsup": "tsup './src/index.ts' --format esm,cjs --sourcemap",
     "build:types": "tsc --project tsconfig.prod.json --emitDeclarationOnly --declaration --outDir dist",
     "build": "pnpm run clean && pnpm run build:tsup && pnpm run build:types",
     "prepublishOnly": "pnpm run clean && pnpm run build",

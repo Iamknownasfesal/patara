@@ -1,6 +1,13 @@
 import type { CoinMetadata } from '@mysten/sui/client';
 import type { TokenInfo } from '@sonarwatch/portfolio-core';
-import SuiTokenList from '@sonarwatch/token-lists/build/sonarwatch.sui.tokenlist.json';
+import SuiTokenListRaw from '@sonarwatch/token-lists/build/sonarwatch.sui.tokenlist.json' assert { type: 'json' };
+
+const SuiTokenList: { tokens: TokenInfo[] } = {
+  tokens: SuiTokenListRaw.tokens.map((token) => ({
+    ...token,
+    networkId: 'sui',
+  })),
+};
 
 const DEFAULT_TOKEN_INFO: TokenInfo = {
   name: 'Unknown',

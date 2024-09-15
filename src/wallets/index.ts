@@ -1,5 +1,6 @@
 import { useWallet } from '@suiet/wallet-kit';
-import { merge } from 'lodash';
+import lodash from 'lodash';
+const { merge } = lodash;
 
 const PRIORITY_WALLET_IDS = ['Sui Wallet', 'Nightly', 'Suiet'];
 
