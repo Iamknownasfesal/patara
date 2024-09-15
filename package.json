@@ -1,12 +1,15 @@
 {
-  "name": "patara-sdk",
-  "version": "0.0.1",
+  "name": "@patara-app/patara-sdk",
+  "version": "1.0.1",
   "description": "Patara SDK",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "bun run scripts/build.mjs",
-    "prepublishOnly": "bun run build",
+    "clean": "rimraf dist && rimraf tsconfig.prod.tsbuildinfo && rimraf tsconfig.tsbuildinfo",
+    "build:tsup": "tsup './src/dca/index.ts' --format esm,cjs --sourcemap",
+    "build:types": "tsc --project tsconfig.prod.json --emitDeclarationOnly --declaration --outDir dist",
+    "build": "pnpm run clean && pnpm run build:tsup && pnpm run build:types",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
     "format": "prettier --write \"**/*.{js,ts,tsx,json}\"",
     "lint": "eslint src",
     "prepare": "husky"
@@ -53,6 +56,7 @@
     "lodash": "^1.0.0",
     "react": "^18.3.1",
     "tiny-invariant": "^1.3.3",
+    "tsup": "^8.2.4",
     "zod": "^3.23.8"
   }
 }
