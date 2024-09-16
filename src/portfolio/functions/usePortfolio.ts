@@ -7,10 +7,20 @@ import { PORTFOLIO_API_BASE_URL } from '../constants';
 import { getCoinMetadataMap } from './getCoinMetadataMap';
 import { getTokenInfo } from './token';
 
-export function usePortfolio(address: string, client: SuiClient) {
+type UsePortfolioParams = {
+  address?: string;
+  client: SuiClient;
+};
+
+export function usePortfolio({ address, client }: UsePortfolioParams) {
   return useQuery({
     queryKey: ['suiPortfolio', address],
-    queryFn: () => fetchSuiPortfolio(address, client),
+    queryFn: () => {
+      invariant(address, 'Address is required');
+
+      return fetchSuiPortfolio(address, client);
+    },
+    enabled: !!address,
   });
 }
 

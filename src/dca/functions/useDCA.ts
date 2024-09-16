@@ -1,19 +1,20 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import invariant from 'tiny-invariant';
 
 import type { CoinMetadataMap } from '../../types';
 import { fetchDCAObjectsAndParse } from '../fetch';
 import type { DCAObject } from '../types';
 
-export function useDCA(
-  address?: string,
-  metadata?: CoinMetadataMap
-): UseQueryResult<DCAObject[], Error> {
+type UseDCAParams = {
+  address?: string;
+  metadata?: CoinMetadataMap;
+};
+
+export function useDCA({ address, metadata }: UseDCAParams) {
   const queryKey = ['dca', address];
 
   const queryFn = async () => {
-    if (!address) {
-      throw new Error('Address is required to fetch DCA objects');
-    }
+    invariant(address, 'Address is required to fetch DCA objects');
 
     return fetchDCAObjectsAndParse(address, metadata || {});
   };
