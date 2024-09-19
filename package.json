@@ -1,6 +1,6 @@
 {
   "name": "@patara-app/patara-sdk",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Patara SDK",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@mysten/sui": "^1.7.0",
-    "@patara-app/dca-sdk": "^1.0.5",
+    "@patara-app/dca-sdk": "^1.0.6",
     "@sonarwatch/portfolio-core": "^0.12.155",
     "@sonarwatch/token-lists": "^1.22.64",
     "@suiet/wallet-kit": "^0.3.2",
