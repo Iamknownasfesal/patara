@@ -1,5 +1,4 @@
-export const PORTFOLIO_API_BASE_URL = 'https://api.patara.app';
-export const PRICE_API_BASE_URL = 'https://aftermath.finance/api/price-info';
+export const PORTFOLIO_API_BASE_URL = 'https://api.patara.app/portfolio';
 
 export const DCA_TOKENS = [
   '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI',

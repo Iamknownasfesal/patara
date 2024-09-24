@@ -1,35 +1,29 @@
-import { SuiClient } from '@mysten/sui/client';
 import type { FetchersResult, TokenInfo } from '@sonarwatch/portfolio-core';
 import { useQuery } from '@tanstack/react-query';
 import invariant from 'tiny-invariant';
 
+import { getMultipleCoinMetadataAll } from '../../coin/functions/getCoinMetadata';
 import { PORTFOLIO_API_BASE_URL } from '../constants';
-import { getCoinMetadataMap } from './getCoinMetadataMap';
 import { getTokenInfo } from './token';
 
 type UsePortfolioParams = {
   address?: string;
-  client: SuiClient;
 };
 
-export function usePortfolio({ address, client }: UsePortfolioParams) {
+export function usePortfolio({ address }: UsePortfolioParams) {
   return useQuery({
     queryKey: ['suiPortfolio', address],
     queryFn: () => {
       invariant(address, 'Address is required');
 
-      return fetchSuiPortfolio(address, client);
+      return fetchSuiPortfolio(address);
     },
     enabled: !!address,
   });
 }
 
-async function fetchSuiPortfolio(
-  address: string,
-  client: SuiClient
-): Promise<FetchersResult> {
+async function fetchSuiPortfolio(address: string): Promise<FetchersResult> {
   invariant(address, 'Address is required');
-  invariant(client, 'Client is required');
 
   const response = await fetch(`${PORTFOLIO_API_BASE_URL}/sui/v1/${address}`);
   if (!response.ok) {
@@ -47,7 +41,6 @@ async function fetchSuiPortfolio(
   const tokensToFetch = getTokensToFetch(data, tokenInfo);
   if (tokensToFetch.size > 0) {
     const updatedTokenInfo = await updateTokenInfo(
-      client,
       Array.from(tokensToFetch),
       tokenInfo
     );
@@ -84,22 +77,21 @@ function getTokensToFetch(
 }
 
 async function updateTokenInfo(
-  client: SuiClient,
   coinAddresses: string[],
   existingTokenInfo: Record<string, TokenInfo>
 ): Promise<Record<string, TokenInfo>> {
-  const coinMetadataMap = await getCoinMetadataMap(client, coinAddresses);
+  const coinMetadataMap = await getMultipleCoinMetadataAll(coinAddresses);
+
   const newTokenInfo = { ...existingTokenInfo };
 
-  Object.entries(coinMetadataMap).forEach(([address, metadata]) => {
-    const formattedAddress = address.replaceAll('::', '-');
-    newTokenInfo[formattedAddress] = {
-      address: formattedAddress,
-      name: metadata.name,
-      symbol: metadata.symbol,
-      decimals: metadata.decimals,
-      logoURI: metadata.iconUrl || '',
+  coinMetadataMap.coins.forEach((coin) => {
+    newTokenInfo[coin.type] = {
+      address: coin.type,
+      decimals: coin.decimals,
+      name: coin.name,
+      symbol: coin.symbol,
       networkId: 'sui',
+      tags: coin.tags,
     };
   });
 
