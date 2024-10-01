@@ -80,6 +80,30 @@ export type StopAndDestroyParams = {
   dca: string;
 };
 
+export type ParsedDCAObject = z.infer<typeof ParsedDCAObjectSchema>;
+
+const CoinMetadataSchema = z.object({
+  decimals: z.number(),
+  description: z.string(),
+  iconUrl: z.string().optional(),
+  id: z.string().optional(),
+  name: z.string(),
+  symbol: z.string(),
+});
+
+export const ParsedDCAOrderSchema = z.object({
+  ...DCAOrderSchema.element.shape,
+  sellInfo: CoinMetadataSchema,
+  buyInfo: CoinMetadataSchema,
+  inputAmountNormalized: z.string(),
+  outputAmountNormalized: z.string(),
+  exchangeRate: z.string(),
+  formattedDate: z.string(),
+  url: z.string(),
+});
+
+export type ParsedDCAOrder = z.infer<typeof ParsedDCAOrderSchema>;
+
 export const ParsedDCAObjectSchema = z.object({
   ...DCAOObjectsSchema.element.shape,
   sellInfo: z.any(),
@@ -94,20 +118,5 @@ export const ParsedDCAObjectSchema = z.object({
   totalDeposited: z.string(),
   formattedDate: z.string(),
   orderLength: z.number(),
-  orders: z.array(z.any()),
+  orders: z.array(ParsedDCAOrderSchema),
 });
-
-export type ParsedDCAObject = z.infer<typeof ParsedDCAObjectSchema>;
-
-export const ParsedDCAOrderSchema = z.object({
-  ...DCAOrderSchema.element.shape,
-  sellInfo: z.any(),
-  buyInfo: z.any(),
-  inputAmountNormalized: z.string(),
-  outputAmountNormalized: z.string(),
-  exchangeRate: z.string(),
-  formattedDate: z.string(),
-  url: z.string(),
-});
-
-export type ParsedDCAOrder = z.infer<typeof ParsedDCAOrderSchema>;

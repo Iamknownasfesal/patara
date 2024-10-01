@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import { getTokenInfoFromMetadata } from '../portfolio/functions/token';
+import { getMultipleCoinMetadata } from '../coin';
 import type { CoinMetadataMap } from '../types';
 import { BASE_URL } from './constants';
 import {
@@ -38,9 +38,15 @@ export async function fetchDCAOrders(dca: string): Promise<DCAOrder[]> {
 export async function fetchDCAObjectsAndParse(
   owner: string,
   coinMetadataMap: CoinMetadataMap
-) {
+): Promise<ParsedDCAObject[]> {
   const dcaObjects = await fetchDCAObjects(owner);
-  return dcaObjects.map((dca) => parseDCAObject(dca, coinMetadataMap));
+
+  const updatedCoinMetadataMap = await fetchMissingCoinMetadata(
+    dcaObjects,
+    coinMetadataMap
+  );
+
+  return dcaObjects.map((dca) => parseDCAObject(dca, updatedCoinMetadataMap));
 }
 
 export async function fetchDCAOrdersAndParse(
@@ -48,21 +54,23 @@ export async function fetchDCAOrdersAndParse(
   coinMetadataMap: CoinMetadataMap
 ) {
   const dcaOrders = await fetchDCAOrders(dca);
-  return dcaOrders.map((dcaOrder) => parseDCAOrder(dcaOrder, coinMetadataMap));
+
+  const updatedCoinMetadataMap = await fetchMissingCoinMetadataForOrders(
+    dcaOrders,
+    coinMetadataMap
+  );
+
+  return dcaOrders.map((dcaOrder) =>
+    parseDCAOrder(dcaOrder, updatedCoinMetadataMap)
+  );
 }
 
 function parseDCAObject(
   dca: DCAObject,
   coinMetadataMap: CoinMetadataMap
 ): ParsedDCAObject {
-  const sellInfo = getTokenInfoFromMetadata(
-    coinMetadataMap,
-    `0x${dca.input.name}`
-  );
-  const buyInfo = getTokenInfoFromMetadata(
-    coinMetadataMap,
-    `0x${dca.output.name}`
-  );
+  const sellInfo = coinMetadataMap[`0x${dca.input.name}`];
+  const buyInfo = coinMetadataMap[`0x${dca.output.name}`];
 
   const percentage = calculatePercentage(dca.remainingOrders, dca.orderCount);
   const sellBalance = calculateSellBalance(dca, sellInfo);
@@ -95,15 +103,8 @@ function parseDCAOrder(
   dcaOrder: DCAOrder,
   coinMetadataMap: CoinMetadataMap
 ): ParsedDCAOrder {
-  const sellInfo = getTokenInfoFromMetadata(
-    coinMetadataMap,
-    `0x${dcaOrder.input.name}`
-  );
-
-  const buyInfo = getTokenInfoFromMetadata(
-    coinMetadataMap,
-    `0x${dcaOrder.output.name}`
-  );
+  const sellInfo = coinMetadataMap[`0x${dcaOrder.input.name}`];
+  const buyInfo = coinMetadataMap[`0x${dcaOrder.output.name}`];
 
   const inputAmountNormalized = normalizeAmount(
     dcaOrder.input_amount,
@@ -125,8 +126,22 @@ function parseDCAOrder(
 
   return {
     ...dcaOrder,
-    sellInfo,
-    buyInfo,
+    sellInfo: {
+      symbol: sellInfo.symbol,
+      name: sellInfo.name,
+      decimals: sellInfo.decimals,
+      description: sellInfo.description,
+      id: sellInfo.id || undefined,
+      iconUrl: sellInfo.iconUrl || undefined,
+    },
+    buyInfo: {
+      symbol: buyInfo.symbol,
+      name: buyInfo.name,
+      decimals: buyInfo.decimals,
+      description: buyInfo.description,
+      id: buyInfo.id || undefined,
+      iconUrl: buyInfo.iconUrl || undefined,
+    },
     inputAmountNormalized,
     outputAmountNormalized,
     exchangeRate,
@@ -243,4 +258,62 @@ function formatDate(timestamp: number): string {
     hour: '2-digit',
     minute: '2-digit',
   });
+}
+
+async function fetchMissingCoinMetadata(
+  dcaObjects: DCAObject[],
+  coinMetadataMap: CoinMetadataMap
+): Promise<CoinMetadataMap> {
+  const coinsInThatIsNotInMetadata = dcaObjects
+    .filter((dca) => !coinMetadataMap[`0x${dca.input.name}`])
+    .map((dca) => `0x${dca.input.name}`);
+
+  const coinsOutThatIsNotInMetadata = dcaObjects
+    .filter((dca) => !coinMetadataMap[`0x${dca.output.name}`])
+    .map((dca) => `0x${dca.output.name}`);
+
+  const all = [...coinsInThatIsNotInMetadata, ...coinsOutThatIsNotInMetadata];
+
+  if (all.length === 0) {
+    return coinMetadataMap;
+  }
+
+  const coinMetadata = await getMultipleCoinMetadata(all);
+
+  return {
+    ...coinMetadataMap,
+    ...coinMetadata.coins.reduce((acc, coin) => {
+      acc[coin.type] = coin;
+      return acc;
+    }, {} as CoinMetadataMap),
+  };
+}
+
+async function fetchMissingCoinMetadataForOrders(
+  dcaOrders: DCAOrder[],
+  coinMetadataMap: CoinMetadataMap
+): Promise<CoinMetadataMap> {
+  const coinsInThatIsNotInMetadata = dcaOrders
+    .filter((order) => !coinMetadataMap[`0x${order.input.name}`])
+    .map((order) => `0x${order.input.name}`);
+
+  const coinsOutThatIsNotInMetadata = dcaOrders
+    .filter((order) => !coinMetadataMap[`0x${order.output.name}`])
+    .map((order) => `0x${order.output.name}`);
+
+  const all = [...coinsInThatIsNotInMetadata, ...coinsOutThatIsNotInMetadata];
+
+  if (all.length === 0) {
+    return coinMetadataMap;
+  }
+
+  const coinMetadata = await getMultipleCoinMetadata(all);
+
+  return {
+    ...coinMetadataMap,
+    ...coinMetadata.coins.reduce((acc, coin) => {
+      acc[coin.type] = coin;
+      return acc;
+    }, {} as CoinMetadataMap),
+  };
 }

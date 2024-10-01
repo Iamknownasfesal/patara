@@ -4,7 +4,6 @@ import invariant from 'tiny-invariant';
 
 import { getMultipleCoinMetadataAll } from '../../coin/functions/getCoinMetadata';
 import { PORTFOLIO_API_BASE_URL } from '../constants';
-import { getTokenInfo } from './token';
 
 type UsePortfolioParams = {
   address?: string;
@@ -38,7 +37,8 @@ async function fetchSuiPortfolio(address: string): Promise<FetchersResult> {
     return data;
   }
 
-  const tokensToFetch = getTokensToFetch(data, tokenInfo);
+  const tokensToFetch = getTokensToFetch(data);
+
   if (tokensToFetch.size > 0) {
     const updatedTokenInfo = await updateTokenInfo(
       Array.from(tokensToFetch),
@@ -55,18 +55,12 @@ async function fetchSuiPortfolio(address: string): Promise<FetchersResult> {
   return data;
 }
 
-function getTokensToFetch(
-  data: FetchersResult,
-  tokenInfo: Record<string, TokenInfo>
-): Set<string> {
+function getTokensToFetch(data: FetchersResult): Set<string> {
   const tokensToFetch = new Set<string>();
   data.elements.forEach((element) => {
     if (element.type === 'multiple' && element.data.assets.length > 0) {
       element.data.assets.forEach((asset) => {
-        if (
-          asset.type === 'token' &&
-          getTokenInfo(tokenInfo, asset.data.address).name === 'Unknown'
-        ) {
+        if (asset.type === 'token') {
           const address = asset.data.address.replaceAll('-', '::');
           tokensToFetch.add(address);
         }
