@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import { getMultipleCoinMetadata } from '../coin';
+import { getMultipleCoinMetadataAll } from '../coin';
 import type { CoinMetadataMap } from '../types';
 import { BASE_URL } from './constants';
 import {
@@ -278,7 +278,7 @@ async function fetchMissingCoinMetadata(
     return coinMetadataMap;
   }
 
-  const coinMetadata = await getMultipleCoinMetadata(all);
+  const coinMetadata = await getMultipleCoinMetadataAll(all);
 
   return {
     ...coinMetadataMap,
@@ -307,7 +307,7 @@ async function fetchMissingCoinMetadataForOrders(
     return coinMetadataMap;
   }
 
-  const coinMetadata = await getMultipleCoinMetadata(all);
+  const coinMetadata = await getMultipleCoinMetadataAll(all);
 
   return {
     ...coinMetadataMap,
