@@ -9,8 +9,6 @@ describe('PoolManager', () => {
     const poolManager = new PoolManager(client);
     const poolsPromise = await poolManager.getAftermathPools();
 
-    console.log(poolsPromise.length);
-
     expect(poolsPromise).toBeDefined();
   }, 60000);
 });
