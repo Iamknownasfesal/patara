@@ -1,6 +1,7 @@
 export * from './coin';
 export * from './constants';
 export * from './dca';
+export * from './farm';
 export * from './lend';
 export * from './lp';
 export * from './portfolio';
