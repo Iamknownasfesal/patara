@@ -7,7 +7,7 @@ import type {
 } from '@suilend/sdk/mainnet/parsers/reserve';
 import { Side } from '@suilend/sdk/mainnet/types';
 import BigNumber from 'bignumber.js';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 
 const msPerYear = 31536000000;
 
