@@ -200,10 +200,16 @@ export class TurbosCLMM extends GenericCLMM {
         liquidity: new BN(this.pool.liquidity),
       });
 
-    const ratio = bigAmountA.div(bigAmountB);
+    const ratio = bigAmountA.isZero()
+      ? new Decimal(0)
+      : bigAmountB.isZero()
+        ? new Decimal(1)
+        : new Decimal(bigAmountA.toString()).div(
+            new Decimal(bigAmountB.toString())
+          );
 
     if (amountsIn.quote) {
-      const amountOut = bigAmountA.mul(ratio);
+      const amountOut = new Decimal(bigAmountA.toString()).mul(ratio);
 
       return {
         amountsOut: {
@@ -212,7 +218,7 @@ export class TurbosCLMM extends GenericCLMM {
         },
       };
     } else if (amountsIn.base) {
-      const amountOut = bigAmountB.mul(ratio);
+      const amountOut = new Decimal(bigAmountB.toString()).mul(ratio);
 
       return {
         amountsOut: {
@@ -250,10 +256,16 @@ export class TurbosCLMM extends GenericCLMM {
         liquidity: new BN(position.liquidity),
       });
 
-    const ratio = bigAmountA.div(bigAmountB);
+    const ratio = bigAmountA.isZero()
+      ? new Decimal(0)
+      : bigAmountB.isZero()
+        ? new Decimal(1)
+        : new Decimal(bigAmountA.toString()).div(
+            new Decimal(bigAmountB.toString())
+          );
 
     if (amountsIn.quote) {
-      const amountOut = bigAmountA.mul(ratio);
+      const amountOut = new Decimal(bigAmountA.toString()).mul(ratio);
 
       return {
         amountsOut: {
@@ -262,7 +274,7 @@ export class TurbosCLMM extends GenericCLMM {
         },
       };
     } else if (amountsIn.base) {
-      const amountOut = bigAmountB.mul(ratio);
+      const amountOut = new Decimal(bigAmountB.toString()).mul(ratio);
 
       return {
         amountsOut: {
