@@ -20,6 +20,7 @@ export type QuoteCreatePositionArgs = {
     base?: bigint;
     quote?: bigint;
   };
+  whatChanged: 'base' | 'quote';
   tickLower: number;
   tickUpper: number;
 };
@@ -39,6 +40,7 @@ export type QuoteIncreasePositionArgs = {
     base?: bigint;
     quote?: bigint;
   };
+  whatChanged: 'base' | 'quote';
   nft: string;
 };
 

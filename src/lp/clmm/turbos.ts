@@ -190,7 +190,7 @@ export class TurbosCLMM extends GenericCLMM {
   ): Promise<QuoteAmountsOutResponse> {
     await this.initializeOrRefreshPool();
     invariant(this.pool, 'The pool must be defined');
-    const { tickLower, tickUpper, amountsIn } = args;
+    const { tickLower, tickUpper, amountsIn, whatChanged } = args;
 
     const [bigAmountA, bigAmountB] =
       this.poolInstance.getTokenAmountsFromLiquidity({
@@ -208,24 +208,62 @@ export class TurbosCLMM extends GenericCLMM {
             new Decimal(bigAmountB.toString())
           );
 
-    if (amountsIn.quote) {
-      const amountOut = new Decimal(bigAmountA.toString()).mul(ratio);
+    if (whatChanged === 'quote' && amountsIn.quote) {
+      if (ratio.isZero()) {
+        return {
+          amountsOut: {
+            base: BigInt(0),
+            quote: amountsIn.quote,
+          },
+        };
+      } else if (
+        ratio.toString() === '1' &&
+        amountsIn?.base?.toString() === '0'
+      ) {
+        return {
+          amountsOut: {
+            base: BigInt(0),
+            quote: amountsIn.quote,
+          },
+        };
+      } else {
+        const amountOut = new Decimal(amountsIn.quote.toString()).div(ratio);
 
-      return {
-        amountsOut: {
-          base: BigInt(amountOut.toString()),
-          quote: amountsIn.quote,
-        },
-      };
-    } else if (amountsIn.base) {
-      const amountOut = new Decimal(bigAmountB.toString()).mul(ratio);
+        return {
+          amountsOut: {
+            base: BigInt(amountOut.toFixed(0)),
+            quote: amountsIn.quote,
+          },
+        };
+      }
+    } else if (whatChanged === 'base' && amountsIn.base) {
+      if (ratio.isZero()) {
+        return {
+          amountsOut: {
+            base: amountsIn.base,
+            quote: BigInt(0),
+          },
+        };
+      } else if (
+        ratio.toString() === '1' &&
+        amountsIn?.base?.toString() === '0'
+      ) {
+        return {
+          amountsOut: {
+            base: amountsIn.base,
+            quote: BigInt(0),
+          },
+        };
+      } else {
+        const amountOut = new Decimal(amountsIn.base.toString()).mul(ratio);
 
-      return {
-        amountsOut: {
-          base: amountsIn.base,
-          quote: BigInt(amountOut.toString()),
-        },
-      };
+        return {
+          amountsOut: {
+            base: amountsIn.base,
+            quote: BigInt(amountOut.toFixed(0)),
+          },
+        };
+      }
     }
 
     return {
@@ -241,7 +279,7 @@ export class TurbosCLMM extends GenericCLMM {
   ): Promise<QuoteAmountsOutResponse> {
     await this.initializeOrRefreshPool();
     invariant(this.pool, 'The pool must be defined');
-    const { amountsIn, nft } = args;
+    const { amountsIn, nft, whatChanged } = args;
     const position = await this.nftInstance.getPositionFields(nft);
 
     const [bigAmountA, bigAmountB] =
@@ -264,24 +302,62 @@ export class TurbosCLMM extends GenericCLMM {
             new Decimal(bigAmountB.toString())
           );
 
-    if (amountsIn.quote) {
-      const amountOut = new Decimal(bigAmountA.toString()).mul(ratio);
+    if (whatChanged === 'quote' && amountsIn.quote) {
+      if (ratio.isZero()) {
+        return {
+          amountsOut: {
+            base: BigInt(0),
+            quote: amountsIn.quote,
+          },
+        };
+      } else if (
+        ratio.toString() === '1' &&
+        amountsIn?.base?.toString() === '0'
+      ) {
+        return {
+          amountsOut: {
+            base: BigInt(0),
+            quote: amountsIn.quote,
+          },
+        };
+      } else {
+        const amountOut = new Decimal(amountsIn.quote.toString()).div(ratio);
 
-      return {
-        amountsOut: {
-          base: BigInt(amountOut.toString()),
-          quote: amountsIn.quote,
-        },
-      };
-    } else if (amountsIn.base) {
-      const amountOut = new Decimal(bigAmountB.toString()).mul(ratio);
+        return {
+          amountsOut: {
+            base: BigInt(amountOut.toFixed(0)),
+            quote: amountsIn.quote,
+          },
+        };
+      }
+    } else if (whatChanged === 'base' && amountsIn.base) {
+      if (ratio.isZero()) {
+        return {
+          amountsOut: {
+            base: amountsIn.base,
+            quote: BigInt(0),
+          },
+        };
+      } else if (
+        ratio.toString() === '1' &&
+        amountsIn?.base?.toString() === '0'
+      ) {
+        return {
+          amountsOut: {
+            base: amountsIn.base,
+            quote: BigInt(0),
+          },
+        };
+      } else {
+        const amountOut = new Decimal(amountsIn.base.toString()).mul(ratio);
 
-      return {
-        amountsOut: {
-          base: amountsIn.base,
-          quote: BigInt(amountOut.toString()),
-        },
-      };
+        return {
+          amountsOut: {
+            base: amountsIn.base,
+            quote: BigInt(amountOut.toFixed(0)),
+          },
+        };
+      }
     }
 
     return {
