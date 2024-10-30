@@ -255,6 +255,7 @@ export class TurbosCLMM extends GenericCLMM {
           },
         };
       } else {
+        console.log('ratio', ratio.toString());
         const amountOut = new Decimal(amountsIn.base.toString()).mul(ratio);
 
         return {
