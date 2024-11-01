@@ -227,7 +227,7 @@ export class TurbosCLMM extends GenericCLMM {
           },
         };
       } else {
-        const amountOut = new Decimal(amountsIn.quote.toString()).div(ratio);
+        const amountOut = ratio.mul(amountsIn.quote.toString());
 
         return {
           amountsOut: {
@@ -255,8 +255,7 @@ export class TurbosCLMM extends GenericCLMM {
           },
         };
       } else {
-        console.log('ratio', ratio.toString());
-        const amountOut = new Decimal(amountsIn.base.toString()).mul(ratio);
+        const amountOut = new Decimal(amountsIn.base.toString()).div(ratio);
 
         return {
           amountsOut: {
@@ -322,7 +321,7 @@ export class TurbosCLMM extends GenericCLMM {
           },
         };
       } else {
-        const amountOut = new Decimal(amountsIn.quote.toString()).div(ratio);
+        const amountOut = ratio.mul(amountsIn.quote.toString());
 
         return {
           amountsOut: {
@@ -350,7 +349,7 @@ export class TurbosCLMM extends GenericCLMM {
           },
         };
       } else {
-        const amountOut = new Decimal(amountsIn.base.toString()).mul(ratio);
+        const amountOut = ratio.mul(amountsIn.base.toString());
 
         return {
           amountsOut: {
