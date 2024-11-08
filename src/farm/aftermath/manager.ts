@@ -1,8 +1,10 @@
 import {
   Aftermath,
+  Casting,
   FarmsStakedPosition,
   FarmsStakingPool,
 } from 'aftermath-ts-sdk';
+import type { FarmsIndexerVaultsResponse } from 'aftermath-ts-sdk/dist/packages/farms/api/farmsApiCastingTypes';
 import invariant from 'tiny-invariant';
 
 import { AftermathFarm } from './pool';
@@ -23,8 +25,13 @@ export class AftermathFarmManager {
 
   async getPools(): Promise<AftermathFarm[]> {
     await this.initializeOrRefreshManager();
-    const pools = await this.aftermathInstance.Farms().getAllStakingPools();
-    return pools.map((pool) => this.getAftermathFarm(pool));
+    const farms: FarmsIndexerVaultsResponse = await fetch(
+      'https://aftermath.finance/api/farms'
+    ).then((res) => res.json());
+
+    return Casting.farms
+      .stakingPoolObjectsFromIndexerResponse(farms)
+      .map((pool) => new AftermathFarm(new FarmsStakingPool(pool)));
   }
 
   async getPositions(
