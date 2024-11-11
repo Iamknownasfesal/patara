@@ -96,7 +96,9 @@ export class PoolManager {
 
   async getAftermathPools() {
     await this.initializeAftermath();
-    return await this.aftermathInstance.Pools().getAllPools();
+    return (await this.aftermathInstance.Pools().getAllPools()).map(
+      (pool) => pool.pool.lpCoinType
+    );
   }
 
   async getSelectiveAftermathPools(

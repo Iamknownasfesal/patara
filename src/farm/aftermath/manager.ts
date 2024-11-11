@@ -1,8 +1,15 @@
 import {
+  getFullnodeUrl,
+  SuiClient,
+  SuiHTTPTransport,
+} from '@mysten/sui/client';
+import {
   Aftermath,
+  AftermathApi,
   FarmsStakedPosition,
   FarmsStakingPool,
   type FarmsStakingPoolObject,
+  IndexerCaller,
 } from 'aftermath-ts-sdk';
 import invariant from 'tiny-invariant';
 
@@ -28,7 +35,20 @@ export class AftermathFarmManager {
       'https://aftermath.finance/api/farms'
     ).then((res) => res.json());
 
-    return farms.map((pool) => new AftermathFarm(new FarmsStakingPool(pool)));
+    const provider = new AftermathApi(
+      new SuiClient({
+        transport: new SuiHTTPTransport({
+          url: getFullnodeUrl('mainnet'),
+        }),
+      }),
+      await this.aftermathInstance.getAddresses(),
+      new IndexerCaller('MAINNET')
+    );
+
+    return farms.map(
+      (pool) =>
+        new AftermathFarm(new FarmsStakingPool(pool, 'MAINNET', provider))
+    );
   }
 
   async getPositions(
