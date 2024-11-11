@@ -33,7 +33,21 @@ export class AftermathFarmManager {
     await this.initializeOrRefreshManager();
     const farms: FarmsStakingPoolObject[] = await fetch(
       'https://aftermath.finance/api/farms'
-    ).then((res) => res.json());
+    ).then((res) =>
+      res.json().then((json) =>
+        JSON.parse(JSON.stringify(json), (key, value) => {
+          if (typeof value === 'string' && /^-?\d+n$/.test(value)) {
+            return BigInt(value.slice(0, -1));
+          }
+
+          if (typeof value === 'string' && /^\d*\.?\d*$/g.test(value)) {
+            return BigInt(value);
+          }
+
+          return value;
+        })
+      )
+    );
 
     const provider = new AftermathApi(
       new SuiClient({
