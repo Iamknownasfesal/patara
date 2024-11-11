@@ -21,7 +21,7 @@ export async function getPrices(
     const normalizedTypes = types.map(normalizeStructTag);
     const result = await fetchPrices(normalizedTypes);
     return Object.fromEntries(
-      normalizedTypes.map((type) => [type, result[type].price])
+      normalizedTypes.map((type) => [type, result[type]?.price ?? 0])
     );
   } catch (error) {
     console.error('Failed to fetch price', error);
