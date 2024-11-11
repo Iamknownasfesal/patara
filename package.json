@@ -1,6 +1,6 @@
 {
   "name": "@patara-app/patara-sdk",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "Patara SDK",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
