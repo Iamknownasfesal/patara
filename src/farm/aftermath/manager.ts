@@ -9,7 +9,6 @@ import {
   FarmsStakedPosition,
   FarmsStakingPool,
   type FarmsStakingPoolObject,
-  IndexerCaller,
 } from 'aftermath-ts-sdk';
 import invariant from 'tiny-invariant';
 
@@ -55,8 +54,7 @@ export class AftermathFarmManager {
           url: getFullnodeUrl('mainnet'),
         }),
       }),
-      await this.aftermathInstance.getAddresses(),
-      new IndexerCaller('MAINNET')
+      await this.aftermathInstance.getAddresses()
     );
 
     return farms.map(
