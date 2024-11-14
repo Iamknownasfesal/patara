@@ -8,11 +8,11 @@ import {
   parseLendingMarket,
   parseObligation,
   SuilendClient,
-} from '@suilend/sdk/mainnet';
-import { phantom } from '@suilend/sdk/mainnet/_generated/_framework/reified';
-import { LendingMarket } from '@suilend/sdk/mainnet/_generated/suilend/lending-market/structs';
-import type { Reserve } from '@suilend/sdk/mainnet/_generated/suilend/reserve/structs';
-import * as simulate from '@suilend/sdk/mainnet/utils/simulate';
+} from '@suilend/sdk';
+import { phantom } from '@suilend/sdk/_generated/_framework/reified';
+import { LendingMarket } from '@suilend/sdk/_generated/suilend/lending-market/structs';
+import type { Reserve } from '@suilend/sdk/_generated/suilend/reserve/structs';
+import * as simulate from '@suilend/sdk/utils/simulate';
 import invariant from 'tiny-invariant';
 
 import { getMultipleCoinMetadataAll } from '../../coin';
@@ -20,7 +20,7 @@ import type { CoinMetadataMap } from '../../types';
 import { formatRewards } from './liquidityMining';
 
 export class Suilend {
-  private suilendClient?: SuilendClient<string>;
+  private suilendClient?: SuilendClient;
   private readonly suiClient: SuiClient;
 
   constructor(client: SuiClient) {
@@ -61,8 +61,7 @@ export class Suilend {
 
     const transaction = new Transaction();
 
-    await this.suilendClient.borrowFromObligation(
-      address,
+    await this.suilendClient.borrow(
       obligationOwnerCapId,
       obligationId,
       coinType,
@@ -85,8 +84,7 @@ export class Suilend {
 
     const transaction = new Transaction();
 
-    await this.suilendClient.withdrawFromObligation(
-      address,
+    await this.suilendClient.withdraw(
       obligationOwnerCapId,
       obligationId,
       coinType,
@@ -224,7 +222,7 @@ export class Suilend {
     invariant(this.suilendClient, 'Suilend client not initialized');
 
     return await simulate.refreshReservePrice(
-      this.suilendClient.LendingMarket.reserves.map((r: Reserve<string>) =>
+      this.suilendClient.lendingMarket.reserves.map((r: Reserve<string>) =>
         simulate.compoundReserveInterest(r, now)
       ),
       new SuiPriceServiceConnection('https://hermes.pyth.network')
@@ -242,15 +240,15 @@ export class Suilend {
     // Update coin metadata map with the ones that doesn't have metadata
     const coinTypesWithMetadata = Object.keys(coinMetadataMap);
     const coinTypesWithoutMetadata = reserves
-      .filter((r) => !coinTypesWithMetadata.includes(r.coinType.name))
-      .map((r) => r.coinType.name);
+      .filter((r) => !coinTypesWithMetadata.includes('0x' + r.coinType.name))
+      .map((r) => '0x' + r.coinType.name);
 
     const withoutOnes = await getMultipleCoinMetadataAll(
       coinTypesWithoutMetadata
     );
 
     return parseLendingMarket(
-      this.suilendClient.LendingMarket,
+      this.suilendClient.lendingMarket,
       reserves,
       {
         ...coinMetadataMap,
@@ -279,7 +277,7 @@ export class Suilend {
         this.suiClient
       );
     } else {
-      this.suilendClient.LendingMarket = rawLendingMarket;
+      this.suilendClient.lendingMarket = rawLendingMarket;
     }
   }
 }

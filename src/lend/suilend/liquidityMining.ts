@@ -1,11 +1,11 @@
 import type { CoinMetadata } from '@mysten/sui/client';
-import { WAD } from '@suilend/sdk/mainnet/constants';
-import type { ParsedObligation } from '@suilend/sdk/mainnet/parsers/obligation';
+import { WAD } from '@suilend/sdk/constants';
+import type { ParsedObligation } from '@suilend/sdk/parsers/obligation';
 import type {
   ParsedPoolReward,
   ParsedReserve,
-} from '@suilend/sdk/mainnet/parsers/reserve';
-import { Side } from '@suilend/sdk/mainnet/types';
+} from '@suilend/sdk/parsers/reserve';
+import { Side } from '@suilend/sdk/types';
 import BigNumber from 'bignumber.js';
 import { cloneDeep } from 'lodash-es';
 
@@ -98,11 +98,15 @@ export const formatRewards = (
             side === Side.DEPOSIT
               ? getDepositShareUsd(
                   reserve,
-                  new BigNumber(reserve.depositsPoolRewardManager.totalShares)
+                  new BigNumber(
+                    reserve.depositsPoolRewardManager.totalShares.toString()
+                  )
                 )
               : getBorrowShareUsd(
                   reserve,
-                  new BigNumber(reserve.borrowsPoolRewardManager.totalShares)
+                  new BigNumber(
+                    reserve.borrowsPoolRewardManager.totalShares.toString()
+                  )
                 )
           )
           .times(100)
@@ -120,11 +124,15 @@ export const formatRewards = (
             side === Side.DEPOSIT
               ? getDepositShare(
                   reserve,
-                  new BigNumber(reserve.depositsPoolRewardManager.totalShares)
+                  new BigNumber(
+                    reserve.depositsPoolRewardManager.totalShares.toString()
+                  )
                 )
               : getBorrowShare(
                   reserve,
-                  new BigNumber(reserve.borrowsPoolRewardManager.totalShares)
+                  new BigNumber(
+                    reserve.borrowsPoolRewardManager.totalShares.toString()
+                  )
                 )
           );
 
@@ -284,7 +292,7 @@ export const getNetAprPercent = (
       ).times(
         getDepositShareUsd(
           deposit.reserve,
-          new BigNumber(deposit.userRewardManager.share)
+          new BigNumber(deposit.userRewardManager.share.toString())
         )
       );
 
@@ -305,7 +313,7 @@ export const getNetAprPercent = (
       ).times(
         getBorrowShareUsd(
           borrow.reserve,
-          new BigNumber(borrow.userRewardManager.share)
+          new BigNumber(borrow.userRewardManager.share.toString())
         )
       );
 

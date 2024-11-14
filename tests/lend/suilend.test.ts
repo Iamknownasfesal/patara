@@ -1,4 +1,4 @@
-import { getFullnodeUrl, SuiClient } from '@mysten/sui/client';
+import { SuiClient } from '@mysten/sui/client';
 import { normalizeStructTag } from '@mysten/sui/utils';
 import { describe, expect, test } from 'bun:test';
 import {
@@ -8,7 +8,9 @@ import {
 } from '../../src';
 
 describe('Suilend', () => {
-  const client = new SuiClient({ url: getFullnodeUrl('mainnet') });
+  const client = new SuiClient({
+    url: 'https://api.shinami.com/node/v1/sui_mainnet_1d67c28ca82e04c25dade19ac7baa1a4',
+  });
   const suilend = new Suilend(client);
   let metadataMap: CoinMetadataMap = {};
 
@@ -28,6 +30,7 @@ describe('Suilend', () => {
         coinTypes.push(normalizeStructTag(pr.coinType.name));
       });
     });
+
     const coinTypesSet = new Set(coinTypes);
 
     const coinMetadata = await getMultipleCoinMetadataAll(
