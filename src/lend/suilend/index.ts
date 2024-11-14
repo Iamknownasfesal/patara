@@ -1,4 +1,4 @@
-import type { SuiClient } from '@mysten/sui/client';
+import type { CoinMetadata, SuiClient } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
 import { SuiPriceServiceConnection } from '@pythnetwork/pyth-sui-js';
 import {
@@ -15,6 +15,7 @@ import type { Reserve } from '@suilend/sdk/mainnet/_generated/suilend/reserve/st
 import * as simulate from '@suilend/sdk/mainnet/utils/simulate';
 import invariant from 'tiny-invariant';
 
+import { getMultipleCoinMetadataAll } from '../../coin';
 import type { CoinMetadataMap } from '../../types';
 import { formatRewards } from './liquidityMining';
 
@@ -238,10 +239,29 @@ export class Suilend {
     await this.initialize();
     invariant(this.suilendClient, 'Suilend client not initialized');
 
+    // Update coin metadata map with the ones that doesn't have metadata
+    const coinTypesWithMetadata = Object.keys(coinMetadataMap);
+    const coinTypesWithoutMetadata = reserves
+      .filter((r) => !coinTypesWithMetadata.includes(r.coinType.name))
+      .map((r) => r.coinType.name);
+
+    const withoutOnes = await getMultipleCoinMetadataAll(
+      coinTypesWithoutMetadata
+    );
+
     return parseLendingMarket(
       this.suilendClient.LendingMarket,
       reserves,
-      coinMetadataMap,
+      {
+        ...coinMetadataMap,
+        ...withoutOnes.coins.reduce(
+          (acc, coin) => {
+            acc[coin.type] = coin;
+            return acc;
+          },
+          {} as Record<string, CoinMetadata>
+        ),
+      },
       now
     );
   }

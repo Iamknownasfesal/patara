@@ -63,7 +63,7 @@
     "@suilend/sdk": "^1.1.2",
     "@tanstack/react-query": "^5.52.2",
     "@types/lodash-es": "^4.17.12",
-    "aftermath-ts-sdk": "1.1.97",
+    "aftermath-ts-sdk": "^1.2.3",
     "bignumber.js": "^9.1.2",
     "lodash-es": "^4.17.21",
     "react": "^18.3.1",
