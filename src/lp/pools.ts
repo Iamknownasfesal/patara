@@ -66,7 +66,9 @@ export class PoolManager {
     const poolIds = pools.map((pool) => pool.objectId);
 
     const parsedPositions = await Promise.all(
-      positions.map(this.getTurbosPositionNftFields)
+      positions.map((objectId) =>
+        this.getTurbosPositionNftFields(objectId, this.turbosInstance)
+      )
     );
 
     return parsedPositions.filter((position) =>
@@ -125,8 +127,11 @@ export class PoolManager {
     return results;
   }
 
-  private async getTurbosPositionNftFields(objectId: string) {
-    return this.turbosInstance.nft.getFields(objectId);
+  private async getTurbosPositionNftFields(
+    objectId: string,
+    instance: TurbosSdk
+  ) {
+    return instance.nft.getFields(objectId);
   }
 
   private async initializeAftermath() {
