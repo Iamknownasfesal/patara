@@ -20,6 +20,7 @@ import invariant from 'tiny-invariant';
 
 import { getMultipleCoinMetadataAll } from '../../coin';
 import type { CoinMetadataMap } from '../../types';
+import { isSendPoints } from './coinType';
 import { formatRewards } from './liquidityMining';
 
 export class Suilend {
@@ -219,10 +220,7 @@ export class Suilend {
     const rewardsBirdeyePriceMap: Record<string, BigNumber | undefined> = {};
 
     const rewardsWithoutReserves = rewardCoinTypes.filter(
-      (coinType) =>
-        coinType !==
-          '0x34fe4f3c9e450fed4d0a3c587ed842eec5313c30c3cc3c0841247c49425e246b::suilend_point::SUILEND_POINT' &&
-        !reserveMap[coinType]
+      (coinType) => !isSendPoints(coinType) && !reserveMap[coinType]
     );
 
     const rewardsBirdeyePrices = await Promise.all(
