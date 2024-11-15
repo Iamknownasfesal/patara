@@ -1,9 +1,11 @@
 import type { CoinMetadata, SuiClient } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
+import { normalizeStructTag } from '@mysten/sui/utils';
 import { SuiPriceServiceConnection } from '@pythnetwork/pyth-sui-js';
 import {
   LENDING_MARKET_ID,
   LENDING_MARKET_TYPE,
+  type ParsedObligation,
   type ParsedReserve,
   parseLendingMarket,
   parseObligation,
@@ -13,6 +15,7 @@ import { phantom } from '@suilend/sdk/_generated/_framework/reified';
 import { LendingMarket } from '@suilend/sdk/_generated/suilend/lending-market/structs';
 import type { Reserve } from '@suilend/sdk/_generated/suilend/reserve/structs';
 import * as simulate from '@suilend/sdk/utils/simulate';
+import BigNumber from 'bignumber.js';
 import invariant from 'tiny-invariant';
 
 import { getMultipleCoinMetadataAll } from '../../coin';
@@ -139,7 +142,23 @@ export class Suilend {
       {}
     ) as Record<string, ParsedReserve>;
 
-    let obligationOwnerCaps, obligations;
+    let obligationOwnerCaps;
+    let obligations: ParsedObligation[] = [];
+
+    const rewardCoinTypes: string[] = [];
+    rawReserves.forEach((r) => {
+      rewardCoinTypes.push(normalizeStructTag(r.coinType.name));
+
+      [
+        ...r.depositsPoolRewardManager.poolRewards,
+        ...r.borrowsPoolRewardManager.poolRewards,
+      ].forEach((pr) => {
+        if (!pr) return;
+
+        const coinType = normalizeStructTag(pr.coinType.name);
+        rewardCoinTypes.push(coinType);
+      });
+    });
 
     const lendingMarketOwnerCapId =
       await SuilendClient.getLendingMarketOwnerCapId(
@@ -189,23 +208,52 @@ export class Suilend {
       );
 
       obligations = rawObligations
-        .filter(
-          (obligation): obligation is NonNullable<typeof obligation> =>
-            obligation !== null
-        )
         .map((rawObligation) =>
           simulate.refreshObligation(rawObligation, rawReserves)
         )
-        .map((refreshedObligation) => {
-          const parsedObligation = parseObligation(
-            refreshedObligation,
-            reserveMap
-          );
-          return parsedObligation;
-        });
+        .map((refreshedObligation) =>
+          parseObligation(refreshedObligation, reserveMap)
+        );
     }
 
-    const rewardMap = formatRewards(reserveMap, coinMetadataMap, obligations);
+    const rewardsBirdeyePriceMap: Record<string, BigNumber | undefined> = {};
+
+    const rewardsWithoutReserves = rewardCoinTypes.filter(
+      (coinType) =>
+        coinType !==
+          '0x34fe4f3c9e450fed4d0a3c587ed842eec5313c30c3cc3c0841247c49425e246b::suilend_point::SUILEND_POINT' &&
+        !reserveMap[coinType]
+    );
+
+    const rewardsBirdeyePrices = await Promise.all(
+      rewardsWithoutReserves.map(async (coinType) => {
+        try {
+          const url = `https://public-api.birdeye.so/defi/price?address=${coinType}`;
+          const res = await fetch(url, {
+            headers: {
+              'X-API-KEY': process.env.NEXT_PUBLIC_BIRDEYE_API_KEY as string,
+              'x-chain': 'sui',
+            },
+          });
+          const json = await res.json();
+          return new BigNumber(json.data.value);
+        } catch (err) {
+          console.error(err);
+        }
+      })
+    );
+
+    for (let i = 0; i < rewardsWithoutReserves.length; i++) {
+      rewardsBirdeyePriceMap[rewardsWithoutReserves[i]] =
+        rewardsBirdeyePrices[i];
+    }
+
+    const rewardMap = formatRewards(
+      reserveMap,
+      coinMetadataMap,
+      rewardsBirdeyePriceMap,
+      obligations
+    );
 
     return {
       lendingMarket: parsedLendingMarket,
