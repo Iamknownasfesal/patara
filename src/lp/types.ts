@@ -73,7 +73,7 @@ export interface TurbosPoolItem {
   top1_pool?: boolean;
 }
 
-export type TurbosPositionItem = Promise<{
+export type TurbosPositionItem = {
   nft: NFT.NftField;
   position: NFT.PositionField;
-}>;
+};
