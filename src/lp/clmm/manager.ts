@@ -4,6 +4,7 @@ import { Transaction } from '@mysten/sui/transactions';
 import { CLMMFactory, type CLMMTypeKeys } from './factory';
 import type { GenericCLMM } from './generic';
 import type {
+  ClosePositionArgs,
   CollectFeesArgs,
   CreatePositionArgs,
   DecreasePositionArgs,
@@ -35,6 +36,10 @@ export class CLMMManager {
 
   async decreasePosition(args: DecreasePositionArgs): Promise<Transaction> {
     return this.clmm.decreasePosition(args);
+  }
+
+  async closePosition(args: ClosePositionArgs): Promise<Transaction> {
+    return this.clmm.closePosition(args);
   }
 
   async collectFees(args: CollectFeesArgs): Promise<Transaction> {
