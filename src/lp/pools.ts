@@ -1,8 +1,8 @@
 import type { SuiClient } from '@mysten/sui/client';
 import { Aftermath, Pool as AftermathPool } from 'aftermath-ts-sdk';
-import { Network, Pool as TurbosPool, TurbosSdk } from 'turbos-clmm-sdk';
+import { Network, TurbosSdk } from 'turbos-clmm-sdk';
 
-import type { CoinInRecord } from './types';
+import type { CoinInRecord, TurbosPoolItem } from './types';
 
 export class PoolManager {
   private readonly aftermathInstance: Aftermath;
@@ -35,7 +35,7 @@ export class PoolManager {
     this.client = client;
   }
 
-  async getTurbosPositions(pools: TurbosPool.Pool[], address: string) {
+  async getTurbosPositions(pools: TurbosPoolItem[], address: string) {
     let cursor: string | undefined | null = undefined;
     let hasNextPage = true;
     const positions: string[] = [];
@@ -63,7 +63,7 @@ export class PoolManager {
       hasNextPage = nextHasNextPage;
     }
 
-    const poolIds = pools.map((pool) => pool.objectId);
+    const poolIds = pools.map((pool) => pool.pool_id);
 
     const parsedPositions = await Promise.all(
       positions.map((objectId) =>
@@ -116,15 +116,18 @@ export class PoolManager {
     return this.turbosInstance.pool.getPools();
   }
 
-  async getSelectiveTurbosPools(pools: string[] = this.DefaultTurbosPools) {
-    const results = [];
+  async getSelectiveTurbosPools(
+    pools: string[] = this.DefaultTurbosPools
+  ): Promise<TurbosPoolItem[]> {
+    const result = await fetch(
+      'https://api.turbos.finance/pools/ids?' +
+        new URLSearchParams({
+          ids: pools.join(','),
+          returnTicks: 'false',
+        })
+    ).then((res) => res.json() as Promise<TurbosPoolItem[]>);
 
-    for (let i = 0; i < pools.length; i++) {
-      const pool = await this.turbosInstance.pool.getPool(pools[i]);
-      results.push(pool);
-    }
-
-    return results;
+    return result;
   }
 
   private async getTurbosPositionNftFields(
