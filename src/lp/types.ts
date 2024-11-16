@@ -1,3 +1,5 @@
+import type { NFT } from 'turbos-clmm-sdk';
+
 export type WalletAddress = string;
 export type CoinType = string;
 export type Balance = bigint;
@@ -70,3 +72,8 @@ export interface TurbosPoolItem {
   is_vault: boolean;
   top1_pool?: boolean;
 }
+
+export type TurbosPositionItem = Promise<{
+  nft: NFT.NftField;
+  position: NFT.PositionField;
+}>;

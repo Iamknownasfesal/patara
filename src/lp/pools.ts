@@ -72,7 +72,7 @@ export class PoolManager {
     );
 
     return parsedPositions.filter((position) =>
-      poolIds.includes(position.pool_id)
+      poolIds.includes(position.nft.pool_id)
     );
   }
 
@@ -149,7 +149,13 @@ export class PoolManager {
     objectId: string,
     instance: TurbosSdk
   ) {
-    return instance.nft.getFields(objectId);
+    const nftFields = await instance.nft.getFields(objectId);
+    const positionFields = await instance.nft.getPositionFields(objectId);
+
+    return {
+      nft: nftFields,
+      position: positionFields,
+    };
   }
 
   private async initializeAftermath() {
