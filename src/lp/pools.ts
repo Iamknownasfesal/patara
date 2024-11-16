@@ -119,15 +119,30 @@ export class PoolManager {
   async getSelectiveTurbosPools(
     pools: string[] = this.DefaultTurbosPools
   ): Promise<TurbosPoolItem[]> {
-    const result = await fetch(
+    const result: {
+      code: number;
+      data: TurbosPoolItem[];
+      message: string;
+    } = await fetch(
       'https://api.turbos.finance/pools/ids?' +
         new URLSearchParams({
           ids: pools.join(','),
           returnTicks: 'false',
         })
-    ).then((res) => res.json() as Promise<TurbosPoolItem[]>);
+    ).then(
+      (res) =>
+        res.json() as Promise<{
+          code: number;
+          data: TurbosPoolItem[];
+          message: string;
+        }>
+    );
 
-    return result;
+    if (result.message !== 'OK') {
+      throw new Error(result.message);
+    }
+
+    return result.data;
   }
 
   private async getTurbosPositionNftFields(
