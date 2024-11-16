@@ -151,14 +151,14 @@ function parseDCAOrder(
 }
 
 function normalizeAmount(amount: string, decimals: number): string {
-  return BigNumber(amount).div(BigNumber(10).pow(decimals)).toFixed(2);
+  return BigNumber(amount).div(BigNumber(10).pow(decimals)).toString(2);
 }
 
 function calculateExchangeRate(
   outputAmount: string,
   inputAmount: string
 ): string {
-  return BigNumber(outputAmount).div(BigNumber(inputAmount)).toFixed(2);
+  return BigNumber(outputAmount).div(BigNumber(inputAmount)).toString(2);
 }
 
 function formatOrderDate(timestampMs: number): string {
@@ -203,7 +203,7 @@ function calculateSpentBalance(dca: DCAObject, sellInfo: any): string {
     )
   )
     .div(10 ** sellInfo.decimals)
-    .toFixed(2);
+    .toString(2);
 }
 
 function calculateEachOrderSize(dca: DCAObject, sellInfo: any): string {
@@ -215,7 +215,7 @@ function calculateEachOrderSize(dca: DCAObject, sellInfo: any): string {
   )
     .div(dca.orderCount)
     .div(10 ** sellInfo.decimals)
-    .toFixed(2);
+    .toString();
 }
 
 function calculateBuyBalance(dca: DCAObject, buyInfo: any): string {
@@ -226,7 +226,7 @@ function calculateBuyBalance(dca: DCAObject, buyInfo: any): string {
     )
   )
     .div(10 ** buyInfo.decimals)
-    .toFixed(2);
+    .toString();
 }
 
 function calculatePrices(dca: DCAObject, buyInfo: any, sellInfo: any) {
@@ -235,12 +235,11 @@ function calculatePrices(dca: DCAObject, buyInfo: any, sellInfo: any) {
       .div(BigNumber(10).pow(buyInfo.decimals))
       .div(
         BigNumber(dca.amountPerTrade).div(BigNumber(10).pow(sellInfo.decimals))
-      )
-      .toFixed(0);
+      );
 
   return {
-    minPrice: calculatePrice(dca.min),
-    maxPrice: calculatePrice(dca.max),
+    minPrice: calculatePrice(dca.min).toString(),
+    maxPrice: calculatePrice(dca.max).toString(),
   };
 }
 
