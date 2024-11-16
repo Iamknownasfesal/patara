@@ -151,14 +151,14 @@ function parseDCAOrder(
 }
 
 function normalizeAmount(amount: string, decimals: number): string {
-  return BigNumber(amount).div(BigNumber(10).pow(decimals)).toString(2);
+  return BigNumber(amount).div(BigNumber(10).pow(decimals)).toString();
 }
 
 function calculateExchangeRate(
   outputAmount: string,
   inputAmount: string
 ): string {
-  return BigNumber(outputAmount).div(BigNumber(inputAmount)).toString(2);
+  return BigNumber(outputAmount).div(BigNumber(inputAmount)).toString();
 }
 
 function formatOrderDate(timestampMs: number): string {
@@ -203,7 +203,7 @@ function calculateSpentBalance(dca: DCAObject, sellInfo: any): string {
     )
   )
     .div(10 ** sellInfo.decimals)
-    .toString(2);
+    .toString();
 }
 
 function calculateEachOrderSize(dca: DCAObject, sellInfo: any): string {
@@ -246,7 +246,7 @@ function calculatePrices(dca: DCAObject, buyInfo: any, sellInfo: any) {
 function calculateTotalDeposited(dca: DCAObject, sellInfo: any): string {
   return BigNumber(dca.inputBalance)
     .div(10 ** sellInfo.decimals)
-    .toFixed(2);
+    .toString();
 }
 
 function formatDate(timestamp: number): string {
