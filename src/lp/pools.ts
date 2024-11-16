@@ -153,6 +153,7 @@ export class PoolManager {
     const positionFields = await instance.nft.getPositionFields(objectId);
 
     return {
+      objectId,
       nft: nftFields,
       position: positionFields,
     };

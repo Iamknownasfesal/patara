@@ -74,6 +74,7 @@ export interface TurbosPoolItem {
 }
 
 export type TurbosPositionItem = {
+  objectId: string;
   nft: NFT.NftField;
   position: NFT.PositionField;
 };
