@@ -376,10 +376,12 @@ export class TurbosCLMM extends GenericCLMM {
     const { nft, percentage } = args;
     const position = await this.nftInstance.getPositionFields(nft);
 
+    console.log(position);
+
     const liquidity = new Decimal(position.liquidity)
       .mul(percentage)
       .div(100)
-      .toFixed(0);
+      .toString();
 
     const [bigAmountA, bigAmountB] =
       this.poolInstance.getTokenAmountsFromLiquidity({
