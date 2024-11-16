@@ -11,6 +11,7 @@ import {
   TurbosSdk,
 } from 'turbos-clmm-sdk';
 
+import { getPrice } from '../../coin';
 import { GenericCLMM } from './generic';
 import type {
   ClosePositionArgs,
@@ -133,11 +134,7 @@ export class TurbosCLMM extends GenericCLMM {
     const amounts = await this.nftInstance.getUnclaimedFeesAndRewards({
       poolId: this.objectId,
       position,
-      getPrice(_coinType: string): Promise<number | string | undefined> {
-        return new Promise(() => {
-          return 0;
-        });
-      },
+      getPrice,
     });
 
     return this.poolInstance.removeLiquidity({
@@ -169,11 +166,7 @@ export class TurbosCLMM extends GenericCLMM {
     const amounts = await this.nftInstance.getUnclaimedFeesAndRewards({
       poolId: this.objectId,
       position,
-      getPrice(_coinType: string): Promise<number | string | undefined> {
-        return new Promise(() => {
-          return 0;
-        });
-      },
+      getPrice,
     });
 
     return this.poolInstance.collectFee({
@@ -379,7 +372,7 @@ export class TurbosCLMM extends GenericCLMM {
     const liquidity = new Decimal(position.liquidity)
       .mul(percentage)
       .div(100)
-      .toString();
+      .toFixed(0);
 
     const [bigAmountA, bigAmountB] =
       this.poolInstance.getTokenAmountsFromLiquidity({
@@ -424,11 +417,7 @@ export class TurbosCLMM extends GenericCLMM {
     const amounts = await this.nftInstance.getUnclaimedFeesAndRewards({
       poolId: this.objectId,
       position,
-      getPrice(_coinType: string): Promise<number | string | undefined> {
-        return new Promise(() => {
-          return 0;
-        });
-      },
+      getPrice,
     });
 
     return {
@@ -454,11 +443,7 @@ export class TurbosCLMM extends GenericCLMM {
     const amounts = await this.nftInstance.getUnclaimedFeesAndRewards({
       poolId: this.objectId,
       position,
-      getPrice(_coinType: string): Promise<number | string | undefined> {
-        return new Promise(() => {
-          return 0;
-        });
-      },
+      getPrice,
     });
 
     return {
