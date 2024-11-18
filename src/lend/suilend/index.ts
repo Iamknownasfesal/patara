@@ -66,13 +66,15 @@ export class Suilend {
 
     const transaction = new Transaction();
 
-    await this.suilendClient.borrow(
+    const borrowedCoin = await this.suilendClient.borrow(
       obligationOwnerCapId,
       obligationId,
       coinType,
       amount,
       transaction
     );
+
+    transaction.transferObjects([borrowedCoin], address);
 
     return transaction;
   }
@@ -89,13 +91,15 @@ export class Suilend {
 
     const transaction = new Transaction();
 
-    await this.suilendClient.withdraw(
+    const withdrawnCoin = await this.suilendClient.withdraw(
       obligationOwnerCapId,
       obligationId,
       coinType,
       amount,
       transaction
     );
+
+    transaction.transferObjects([withdrawnCoin], address);
 
     return transaction;
   }
