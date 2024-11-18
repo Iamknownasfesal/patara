@@ -1,4 +1,4 @@
-import type { CoinMetadata, SuiClient } from '@mysten/sui/client';
+import type { SuiClient } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
 import { normalizeStructTag } from '@mysten/sui/utils';
 import { SuiPriceServiceConnection } from '@pythnetwork/pyth-sui-js';
@@ -121,13 +121,22 @@ export class Suilend {
     return transaction;
   }
 
-  async getUserAndAppData(address: string, coinMetadataMap: CoinMetadataMap) {
+  async getUserAndAppData(address: string) {
     await this.initialize();
     invariant(this.suilendClient, 'Suilend client not initialized');
 
     const now = Math.floor(Date.now() / 1000);
 
     const rawReserves = await this.getRawReserves(now);
+
+    const coinMetadataMap = await getMultipleCoinMetadataAll(
+      rawReserves.map((r) => '0x' + r.coinType.name)
+    ).then((res) =>
+      res.coins.reduce((acc, coin) => {
+        acc[coin.type] = coin;
+        return acc;
+      }, {} as CoinMetadataMap)
+    );
 
     const parsedLendingMarket = await this.getParsedLendingMarket(
       coinMetadataMap,
@@ -282,30 +291,10 @@ export class Suilend {
   ) {
     await this.initialize();
     invariant(this.suilendClient, 'Suilend client not initialized');
-
-    // Update coin metadata map with the ones that doesn't have metadata
-    const coinTypesWithMetadata = Object.keys(coinMetadataMap);
-    const coinTypesWithoutMetadata = reserves
-      .filter((r) => !coinTypesWithMetadata.includes('0x' + r.coinType.name))
-      .map((r) => '0x' + r.coinType.name);
-
-    const withoutOnes = await getMultipleCoinMetadataAll(
-      coinTypesWithoutMetadata
-    );
-
     return parseLendingMarket(
       this.suilendClient.lendingMarket,
       reserves,
-      {
-        ...coinMetadataMap,
-        ...withoutOnes.coins.reduce(
-          (acc, coin) => {
-            acc[coin.type] = coin;
-            return acc;
-          },
-          {} as Record<string, CoinMetadata>
-        ),
-      },
+      coinMetadataMap,
       now
     );
   }
