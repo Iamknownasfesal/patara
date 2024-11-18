@@ -315,12 +315,6 @@ export class Suilend {
   ) {
     await this.initialize();
     invariant(this.suilendClient, 'Suilend client not initialized');
-    console.log(
-      coinMetadataMap,
-      reserves
-        .map((r) => normalizeStructTag(r.coinType.name))
-        .filter((coinType) => !Object.keys(coinMetadataMap).includes(coinType))
-    );
     return parseLendingMarket(
       this.suilendClient.lendingMarket,
       reserves,
