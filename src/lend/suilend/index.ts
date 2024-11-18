@@ -13,6 +13,7 @@ import {
 } from '@suilend/sdk';
 import { phantom } from '@suilend/sdk/_generated/_framework/reified';
 import { LendingMarket } from '@suilend/sdk/_generated/suilend/lending-market/structs';
+import type { PoolReward } from '@suilend/sdk/_generated/suilend/liquidity-mining/structs';
 import type { Reserve } from '@suilend/sdk/_generated/suilend/reserve/structs';
 import * as simulate from '@suilend/sdk/utils/simulate';
 import BigNumber from 'bignumber.js';
@@ -121,7 +122,7 @@ export class Suilend {
     return transaction;
   }
 
-  async getUserAndAppData(address: string) {
+  async getUserAndAppData(metadata: CoinMetadataMap, address: string) {
     await this.initialize();
     invariant(this.suilendClient, 'Suilend client not initialized');
 
@@ -129,17 +130,40 @@ export class Suilend {
 
     const rawReserves = await this.getRawReserves(now);
 
-    const coinMetadataMap = await getMultipleCoinMetadataAll(
-      rawReserves.map((r) => '0x' + r.coinType.name)
-    ).then((res) =>
+    const rawReservesThatIsUnknown = rawReserves
+      .filter((r) => !metadata[r.coinType.name])
+      .map((r) => normalizeStructTag(r.coinType.name));
+
+    const rewardsThatIsUnknown = Array.from(
+      new Set(
+        [
+          ...rawReserves.map((r) => r.depositsPoolRewardManager.poolRewards),
+          ...rawReserves.map((r) => r.borrowsPoolRewardManager.poolRewards),
+        ]
+          .flat()
+          .filter((r): r is PoolReward => r !== undefined && r !== null)
+          .filter((r) => !metadata[normalizeStructTag(r.coinType.name)])
+          .map((r) => normalizeStructTag(r.coinType.name))
+      )
+    );
+
+    const coinMetadataMapWithout = await getMultipleCoinMetadataAll([
+      ...rawReservesThatIsUnknown,
+      ...rewardsThatIsUnknown,
+    ]).then((res) =>
       res.coins.reduce((acc, coin) => {
         acc[coin.type] = coin;
         return acc;
       }, {} as CoinMetadataMap)
     );
 
+    const combinedCoinMetadataMap = {
+      ...metadata,
+      ...coinMetadataMapWithout,
+    };
+
     const parsedLendingMarket = await this.getParsedLendingMarket(
-      coinMetadataMap,
+      combinedCoinMetadataMap,
       rawReserves,
       now
     );
@@ -238,7 +262,7 @@ export class Suilend {
           const url = `https://public-api.birdeye.so/defi/price?address=${coinType}`;
           const res = await fetch(url, {
             headers: {
-              'X-API-KEY': process.env.NEXT_PUBLIC_BIRDEYE_API_KEY as string,
+              'X-API-KEY': '68cbf7b5937347a197d169632654e5e4',
               'x-chain': 'sui',
             },
           });
@@ -257,7 +281,7 @@ export class Suilend {
 
     const rewardMap = formatRewards(
       reserveMap,
-      coinMetadataMap,
+      combinedCoinMetadataMap,
       rewardsBirdeyePriceMap,
       obligations
     );
@@ -291,6 +315,12 @@ export class Suilend {
   ) {
     await this.initialize();
     invariant(this.suilendClient, 'Suilend client not initialized');
+    console.log(
+      coinMetadataMap,
+      reserves
+        .map((r) => normalizeStructTag(r.coinType.name))
+        .filter((coinType) => !Object.keys(coinMetadataMap).includes(coinType))
+    );
     return parseLendingMarket(
       this.suilendClient.lendingMarket,
       reserves,
