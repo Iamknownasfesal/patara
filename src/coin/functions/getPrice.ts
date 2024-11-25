@@ -1,7 +1,7 @@
 import { normalizeStructTag } from '@mysten/sui/utils';
 
 import { API_BASE_URL } from '../constants';
-import type { PriceResponse } from '../types';
+import type { PriceOutput, PriceResponse } from '../types';
 
 export async function getPrice(type: string): Promise<number> {
   try {
@@ -11,6 +11,17 @@ export async function getPrice(type: string): Promise<number> {
   } catch (error) {
     console.error('Failed to fetch price', error);
     return 0;
+  }
+}
+
+export async function getPriceAndChange(type: string): Promise<PriceOutput> {
+  try {
+    const normalizedType = normalizeStructTag(type);
+    const result = await fetchPrice(normalizedType);
+    return result[normalizedType];
+  } catch (error) {
+    console.error('Failed to fetch price', error);
+    return { price: 0, priceChange24HoursPercentage: 0 };
   }
 }
 
@@ -26,6 +37,21 @@ export async function getPrices(
   } catch (error) {
     console.error('Failed to fetch price', error);
     return Object.fromEntries(types.map((type) => [type, 0]));
+  }
+}
+
+export async function getPriceAndChangeForCoins(
+  coins: string[]
+): Promise<Record<string, PriceOutput>> {
+  try {
+    const types = coins.map(normalizeStructTag);
+    const result = await fetchPrices(types);
+    return Object.fromEntries(coins.map((coin) => [coin, result[coin]]));
+  } catch (error) {
+    console.error('Failed to fetch price', error);
+    return Object.fromEntries(
+      coins.map((coin) => [coin, { price: 0, priceChange24HoursPercentage: 0 }])
+    );
   }
 }
 

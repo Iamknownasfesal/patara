@@ -1,5 +1,4 @@
-import type { SuiClient } from '@mysten/sui/client';
-import type { CoinStruct } from '@mysten/sui/client';
+import type { CoinStruct, SuiClient } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
 
 export type CoinArgs = {
@@ -23,6 +22,7 @@ export type MergeCoinArgs = {
 
 export type PriceOutput = {
   price: number;
+  priceChange24HoursPercentage: number;
 };
 
 export type PriceResponse = Record<string, PriceOutput>;
