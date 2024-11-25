@@ -3,6 +3,7 @@ import { Transaction } from '@mysten/sui/transactions';
 import { normalizeStructTag } from '@mysten/sui/utils';
 import { SuiPriceServiceConnection } from '@pythnetwork/pyth-sui-js';
 import {
+  type ClaimRewardsReward,
   LENDING_MARKET_ID,
   LENDING_MARKET_TYPE,
   type ParsedObligation,
@@ -120,6 +121,26 @@ export class Suilend {
       obligationId,
       coinType,
       amount,
+      transaction
+    );
+
+    return transaction;
+  }
+
+  async claimRewards(
+    address: string,
+    obligationOwnerCapId: string,
+    rewards: ClaimRewardsReward[]
+  ) {
+    await this.initialize();
+    invariant(this.suilendClient, 'Suilend client not initialized');
+
+    const transaction = new Transaction();
+
+    this.suilendClient.claimRewardsAndSendToUser(
+      address,
+      obligationOwnerCapId,
+      rewards,
       transaction
     );
 
