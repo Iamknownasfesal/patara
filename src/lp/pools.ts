@@ -27,6 +27,7 @@ export class PoolManager {
     '0x2c6fc12bf0d093b5391e7c0fed7e044d52bc14eb29f6352a3fb358e33e80729e',
     '0x27645957e0260f3c5874c4895c11d2adca6b2c3d60ad4afb805acb635dd46f21',
     '0x21026a3198bf7e656441355dd78f2c14778134d10d16d17c2cf5651d99d00ee9',
+    '0xa0b55c090a286dfc77125231735077bc12a7bf865feb07accdac6f5be03f69b4',
   ];
 
   constructor(client: SuiClient) {
