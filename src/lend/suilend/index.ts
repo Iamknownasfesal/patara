@@ -20,9 +20,9 @@ import * as simulate from '@suilend/sdk/utils/simulate';
 import BigNumber from 'bignumber.js';
 import invariant from 'tiny-invariant';
 
-import { getMultipleCoinMetadataAll } from '../../coin';
+import { getMultipleCoinMetadataAll, getPrices } from '../../coin';
 import type { CoinMetadataMap } from '../../types';
-import { isSendPoints } from './coinType';
+import { isMayaCoinType, isSendPoints } from './coinType';
 import { formatRewards } from './liquidityMining';
 
 export class Suilend {
@@ -275,39 +275,27 @@ export class Suilend {
         );
     }
 
-    const rewardsBirdeyePriceMap: Record<string, BigNumber | undefined> = {};
-
     const rewardsWithoutReserves = rewardCoinTypes.filter(
-      (coinType) => !isSendPoints(coinType) && !reserveMap[coinType]
+      (coinType) =>
+        !isSendPoints(coinType) &&
+        !isMayaCoinType(coinType) &&
+        !reserveMap[coinType]
     );
 
-    const rewardsBirdeyePrices = await Promise.all(
-      rewardsWithoutReserves.map(async (coinType) => {
-        try {
-          const url = `https://public-api.birdeye.so/defi/price?address=${coinType}`;
-          const res = await fetch(url, {
-            headers: {
-              'X-API-KEY': '68cbf7b5937347a197d169632654e5e4',
-              'x-chain': 'sui',
-            },
-          });
-          const json = await res.json();
-          return new BigNumber(json.data.value);
-        } catch (err) {
-          console.error(err);
-        }
-      })
+    const rewardsPriceMap = Object.entries(
+      await getPrices(rewardsWithoutReserves)
+    ).reduce(
+      (acc, [coinType, price]) => {
+        acc[coinType] = BigNumber(price);
+        return acc;
+      },
+      {} as Record<string, BigNumber>
     );
-
-    for (let i = 0; i < rewardsWithoutReserves.length; i++) {
-      rewardsBirdeyePriceMap[rewardsWithoutReserves[i]] =
-        rewardsBirdeyePrices[i];
-    }
 
     const rewardMap = formatRewards(
       reserveMap,
       combinedCoinMetadataMap,
-      rewardsBirdeyePriceMap,
+      rewardsPriceMap,
       obligations
     );
 
