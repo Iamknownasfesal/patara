@@ -1,6 +1,6 @@
 {
   "name": "@patara-app/patara-sdk",
-  "version": "2.6.12",
+  "version": "2.6.13",
   "description": "Patara SDK",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -51,8 +51,8 @@
     "typescript": "^5.5.4"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0",
-    "react": ">=18.0.0"
+    "react": ">=18.0.0",
+    "typescript": "^5.0.0"
   },
   "dependencies": {
     "@mysten/sui": "^1.14.3",
