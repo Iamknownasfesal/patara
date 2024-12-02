@@ -333,26 +333,51 @@ export class Suilend {
     await this.initialize();
     invariant(this.suilendClient, 'Suilend client not initialized');
 
-    const borrowRewards = this.suilendClient.lendingMarket.reserves.map((r) =>
-      r.borrowsPoolRewardManager.poolRewards
-        .filter((pr): pr is PoolReward => pr !== null && pr !== undefined)
-        .map((pr) => normalizeStructTag(pr.coinType.name))
-    );
+    const borrowRewards = this.suilendClient.lendingMarket.reserves
+      .map((r) =>
+        r.borrowsPoolRewardManager.poolRewards
+          .filter((pr): pr is PoolReward => pr !== null && pr !== undefined)
+          .map((pr) => normalizeStructTag(pr.coinType.name))
+      )
+      .flat();
 
-    const depositRewards = this.suilendClient.lendingMarket.reserves.map((r) =>
-      r.depositsPoolRewardManager.poolRewards
-        .filter((pr): pr is PoolReward => pr !== null && pr !== undefined)
-        .map((pr) => normalizeStructTag(pr.coinType.name))
-    );
+    const depositRewards = this.suilendClient.lendingMarket.reserves
+      .map((r) =>
+        r.depositsPoolRewardManager.poolRewards
+          .filter((pr): pr is PoolReward => pr !== null && pr !== undefined)
+          .map((pr) => normalizeStructTag(pr.coinType.name))
+      )
+      .flat();
 
-    return [...borrowRewards, ...depositRewards];
+    const set = new Set([...borrowRewards, ...depositRewards]);
+
+    return Array.from(set);
   }
 
   async getReservesAndRewardsCoinTypes() {
-    return [
-      ...(await this.getReserveCoinTypes()),
-      ...(await this.getRewardsCoinTypes()),
-    ];
+    await this.initialize();
+    invariant(this.suilendClient, 'Suilend client not initialized');
+    const set = new Set([
+      ...this.suilendClient.lendingMarket.reserves.map((r) =>
+        normalizeStructTag(r.coinType.name)
+      ),
+      ...this.suilendClient.lendingMarket.reserves
+        .map((r) =>
+          r.borrowsPoolRewardManager.poolRewards
+            .filter((pr): pr is PoolReward => pr !== null && pr !== undefined)
+            .map((pr) => normalizeStructTag(pr.coinType.name))
+        )
+        .flat(),
+      ...this.suilendClient.lendingMarket.reserves
+        .map((r) =>
+          r.depositsPoolRewardManager.poolRewards
+            .filter((pr): pr is PoolReward => pr !== null && pr !== undefined)
+            .map((pr) => normalizeStructTag(pr.coinType.name))
+        )
+        .flat(),
+    ]);
+
+    return Array.from(set);
   }
 
   private async getParsedLendingMarket(
