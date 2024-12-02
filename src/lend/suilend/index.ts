@@ -306,6 +306,7 @@ export class Suilend {
       obligations,
       reserveMap,
       rewardMap,
+      rewardsPriceMap,
     };
   }
 
