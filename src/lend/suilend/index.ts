@@ -321,6 +321,14 @@ export class Suilend {
     );
   }
 
+  async getReserveCoinTypes() {
+    await this.initialize();
+    invariant(this.suilendClient, 'Suilend client not initialized');
+    return this.suilendClient.lendingMarket.reserves.map((r) =>
+      normalizeStructTag(r.coinType.name)
+    );
+  }
+
   private async getParsedLendingMarket(
     coinMetadataMap: CoinMetadataMap,
     reserves: Reserve<string>[],
