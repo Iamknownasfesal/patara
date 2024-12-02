@@ -329,6 +329,32 @@ export class Suilend {
     );
   }
 
+  async getRewardsCoinTypes() {
+    await this.initialize();
+    invariant(this.suilendClient, 'Suilend client not initialized');
+
+    const borrowRewards = this.suilendClient.lendingMarket.reserves.map((r) =>
+      r.borrowsPoolRewardManager.poolRewards
+        .filter((pr): pr is PoolReward => pr !== null && pr !== undefined)
+        .map((pr) => normalizeStructTag(pr.coinType.name))
+    );
+
+    const depositRewards = this.suilendClient.lendingMarket.reserves.map((r) =>
+      r.depositsPoolRewardManager.poolRewards
+        .filter((pr): pr is PoolReward => pr !== null && pr !== undefined)
+        .map((pr) => normalizeStructTag(pr.coinType.name))
+    );
+
+    return [...borrowRewards, ...depositRewards];
+  }
+
+  async getReservesAndRewardsCoinTypes() {
+    return [
+      ...(await this.getReserveCoinTypes()),
+      ...(await this.getRewardsCoinTypes()),
+    ];
+  }
+
   private async getParsedLendingMarket(
     coinMetadataMap: CoinMetadataMap,
     reserves: Reserve<string>[],
