@@ -142,7 +142,14 @@ export class Suilend {
 
     lendEvent(LendWay.REPAY, coin, coinType, transaction);
 
-    this.suilendClient.repay(obligationId, coinType, coin, transaction);
+    const repaidCoin = this.suilendClient.repay(
+      obligationId,
+      coinType,
+      coin,
+      transaction
+    );
+
+    transaction.transferObjects([repaidCoin], address);
 
     return transaction;
   }
