@@ -142,18 +142,12 @@ export class TurbosCLMM extends GenericCLMM {
       nft,
       pool: this.objectId,
       slippage,
-      amountA: this.sdk.math.scaleDown(
-        new Decimal(bigAmountA.toString()).toString(),
-        decimals.coinA
-      ),
-      amountB: this.sdk.math.scaleDown(
-        new Decimal(bigAmountB.toString()).toString(),
-        decimals.coinB
-      ),
+      amountA: bigAmountA.toString(),
+      amountB: bigAmountB.toString(),
       decreaseLiquidity: position.liquidity,
-      collectAmountA: amounts.fields.feeOwedA,
-      collectAmountB: amounts.fields.feeOwedB,
-      rewardAmounts: amounts.fields.collectRewards,
+      collectAmountA: this.scaleDown(amounts.fields.feeOwedA, decimals.coinA),
+      collectAmountB: this.scaleDown(amounts.fields.feeOwedB, decimals.coinB),
+      rewardAmounts: amounts.fields.collectRewards.map(this.scaleDown),
     });
   }
 
@@ -173,8 +167,8 @@ export class TurbosCLMM extends GenericCLMM {
       address: walletAddress,
       nft,
       pool: this.objectId,
-      collectAmountA: amounts.fields.feeOwedA,
-      collectAmountB: amounts.fields.feeOwedB,
+      collectAmountA: this.scaleDown(amounts.fields.feeOwedA),
+      collectAmountB: this.scaleDown(amounts.fields.feeOwedB),
     });
   }
 
@@ -456,5 +450,12 @@ export class TurbosCLMM extends GenericCLMM {
 
   private async initializeOrRefreshPool(): Promise<void> {
     this.pool = await this.poolInstance.getPool(this.objectId);
+  }
+
+  private scaleDown(amount: string, decimals: number = 6): string {
+    return new BN(amount)
+      .mul(new BN(10))
+      .add(new BN(1 * 10 ** decimals))
+      .toString();
   }
 }
