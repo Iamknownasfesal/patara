@@ -7,3 +7,4 @@ export * from './lend';
 export * from './lp';
 export * from './portfolio';
 export * from './types';
+export * from './utils';

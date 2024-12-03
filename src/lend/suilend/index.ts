@@ -21,8 +21,10 @@ import BigNumber from 'bignumber.js';
 import invariant from 'tiny-invariant';
 
 import { getMultipleCoinMetadataAll, getPrices } from '../../coin';
+import { lendEvent, LendWay } from '../../events';
 import type { CoinMetadataMap } from '../../types';
-import { isMayaCoinType, isSendPoints } from './coinType';
+import { getCoinForInput } from '../../utils';
+import { isMayaCoinType, isSendPoints } from '../../utils/coinType';
 import { formatRewards } from './liquidityMining';
 
 export class Suilend {
@@ -44,10 +46,20 @@ export class Suilend {
 
     const transaction = new Transaction();
 
-    await this.suilendClient.depositIntoObligation(
+    const coin = await getCoinForInput(
+      this.suiClient,
       address,
       coinType,
       amount,
+      transaction
+    );
+
+    lendEvent(LendWay.LEND, coin, coinType, transaction);
+
+    this.suilendClient.depositCoin(
+      address,
+      coin,
+      coinType,
       transaction,
       obligationOwnerCapId
     );
@@ -75,6 +87,8 @@ export class Suilend {
       transaction
     );
 
+    lendEvent(LendWay.BORROW, borrowedCoin, coinType, transaction);
+
     transaction.transferObjects([borrowedCoin], address);
 
     return transaction;
@@ -100,6 +114,8 @@ export class Suilend {
       transaction
     );
 
+    lendEvent(LendWay.WITHDRAW, withdrawnCoin, coinType, transaction);
+
     transaction.transferObjects([withdrawnCoin], address);
 
     return transaction;
@@ -116,13 +132,17 @@ export class Suilend {
 
     const transaction = new Transaction();
 
-    await this.suilendClient.repayIntoObligation(
+    const coin = await getCoinForInput(
+      this.suiClient,
       address,
-      obligationId,
       coinType,
       amount,
       transaction
     );
+
+    lendEvent(LendWay.REPAY, coin, coinType, transaction);
+
+    this.suilendClient.repay(obligationId, coinType, coin, transaction);
 
     return transaction;
   }
