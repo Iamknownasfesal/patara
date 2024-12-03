@@ -123,7 +123,7 @@ export class AftermathAMM extends GenericAMM {
 
       ammEvent(
         AmmWay.REMOVE_LIQUIDITY,
-        withdrawnCoinIds,
+        coinTypes.map((_, index) => withdrawnCoinIds[index]),
         coinTypes,
         this.pool.pool.objectId,
         tx
@@ -144,7 +144,7 @@ export class AftermathAMM extends GenericAMM {
 
       ammEvent(
         AmmWay.REMOVE_LIQUIDITY,
-        withdrawnCoinIds,
+        coinTypes.map((_, index) => withdrawnCoinIds[index]),
         coinTypes,
         this.pool.pool.objectId,
         tx
