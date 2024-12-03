@@ -1,4 +1,4 @@
-import { Inputs } from '@mysten/sui/dist/cjs/transactions';
+import { Inputs } from '@mysten/sui/transactions';
 
 export const PACKAGE = '0x0';
 export const SHARED_OBJECTS = {

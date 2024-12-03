@@ -1,5 +1,5 @@
 import type { SuiClient } from '@mysten/sui/client';
-import type { Transaction } from '@mysten/sui/dist/cjs/transactions';
+import type { Transaction } from '@mysten/sui/transactions';
 import invariant from 'tiny-invariant';
 import {
   BN,

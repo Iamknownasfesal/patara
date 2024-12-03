@@ -1,4 +1,4 @@
-import type { Transaction } from '@mysten/sui/dist/cjs/transactions';
+import type { Transaction } from '@mysten/sui/transactions';
 import { FarmsStakedPosition } from 'aftermath-ts-sdk';
 
 import type { AftermathFarm } from './pool';
