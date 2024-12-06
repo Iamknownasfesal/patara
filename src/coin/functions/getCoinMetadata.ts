@@ -96,7 +96,9 @@ export async function getMultipleCoinMetadataAll(
   return { coins: allResults };
 }
 
-export async function getCoinMetadata(coinType: string) {
+export async function getCoinMetadata(
+  coinType: string
+): Promise<z.infer<typeof CoinSchema>> {
   const url = `${PATARA_METADATA_API_BASE_URL}/${PATARA_METADATA_API_ENDPOINTS.SINGLE_COIN_METADATA}/${coinType}`;
   return fetchAndParse(url, CoinSchema);
 }
@@ -105,7 +107,7 @@ export async function getTaggedCoins(
   tags: string[],
   limit: number = 20,
   offset: number = 0
-) {
+): Promise<z.infer<typeof MultipleCoinMetadataResponseWithPaginationSchema>> {
   const url = `${PATARA_METADATA_API_BASE_URL}/${PATARA_METADATA_API_ENDPOINTS.TAGGED_COINS}?tags=${tags.join(',')}&limit=${limit}&offset=${offset}`;
   return fetchAndParse(url, MultipleCoinMetadataResponseWithPaginationSchema);
 }
