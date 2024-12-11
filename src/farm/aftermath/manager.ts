@@ -1,8 +1,4 @@
-import {
-  getFullnodeUrl,
-  SuiClient,
-  SuiHTTPTransport,
-} from '@mysten/sui/client';
+import { SuiClient } from '@mysten/sui/client';
 import {
   Aftermath,
   AftermathApi,
@@ -22,10 +18,12 @@ type AftermathFarmWithPositions = {
 
 export class AftermathFarmManager {
   private readonly aftermathInstance: Aftermath;
+  private readonly provider: SuiClient;
   private isInitialized: boolean = false;
 
-  constructor() {
+  constructor(provider: SuiClient) {
     this.aftermathInstance = new Aftermath('MAINNET');
+    this.provider = provider;
   }
 
   async getPools(): Promise<AftermathFarm[]> {
@@ -49,11 +47,7 @@ export class AftermathFarmManager {
     );
 
     const provider = new AftermathApi(
-      new SuiClient({
-        transport: new SuiHTTPTransport({
-          url: getFullnodeUrl('mainnet'),
-        }),
-      }),
+      this.provider,
       await this.aftermathInstance.getAddresses()
     );
 
@@ -83,7 +77,12 @@ export class AftermathFarmManager {
 
       invariant(farm, 'Farm not found');
 
-      return this.getAftermathPosition(farm, position);
+      return this.getAftermathPosition(
+        farm,
+        this.provider,
+        this.aftermathInstance,
+        position
+      );
     });
   }
 
@@ -109,9 +108,11 @@ export class AftermathFarmManager {
 
   getAftermathPosition(
     farm: AftermathFarm,
+    provider: SuiClient,
+    aftermath: Aftermath,
     position: FarmsStakedPosition
   ): AftermathFarmPosition {
-    return new AftermathFarmPosition(farm, position);
+    return new AftermathFarmPosition(farm, provider, aftermath, position);
   }
 
   private async initializeOrRefreshManager(): Promise<void> {

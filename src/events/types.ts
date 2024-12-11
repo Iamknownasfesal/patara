@@ -37,3 +37,17 @@ export const LEND_WAY_MAP = {
   [LendWay.REPAY]: 'repay',
   [LendWay.WITHDRAW]: 'withdraw',
 };
+
+export enum FarmWay {
+  DEPOSIT = 'deposit',
+  WITHDRAW = 'withdraw',
+  RELOCK = 'relock',
+  HARVEST = 'harvest',
+}
+
+export const FARM_WAY_MAP = {
+  [FarmWay.DEPOSIT]: 'deposit',
+  [FarmWay.WITHDRAW]: 'withdraw',
+  [FarmWay.RELOCK]: 'relock',
+  [FarmWay.HARVEST]: 'harvest',
+};
