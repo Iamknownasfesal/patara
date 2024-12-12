@@ -57,6 +57,7 @@
   },
   "dependencies": {
     "@mysten/sui": "^1.14.3",
+    "@polymedia/suitcase-core": "^0.0.36",
     "@pythnetwork/pyth-sui-js": "^2.1.0",
     "@sonarwatch/portfolio-core": "^0.12.155",
     "@sonarwatch/token-lists": "^1.22.64",

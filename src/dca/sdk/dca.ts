@@ -10,7 +10,7 @@ import {
   SUI_CLOCK_OBJECT_ID,
   SUI_DECIMALS,
 } from '@mysten/sui/utils';
-import { devInspectAndGetResults } from '@polymedia/suitcase-core';
+import { devInspectAndGetExecutionResults } from '@polymedia/suitcase-core';
 import BigNumber from 'bignumber.js';
 import invariant from 'tiny-invariant';
 
@@ -136,7 +136,7 @@ export class DcaSDK {
       arguments: [tx.object(dca)],
     });
 
-    const result = await devInspectAndGetResults(
+    const result = await devInspectAndGetExecutionResults(
       this.#client as any,
       tx as any
     );
