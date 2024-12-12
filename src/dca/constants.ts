@@ -6,11 +6,15 @@ import { DcaSDK } from './sdk';
 export const PACKAGES = {
   mainnet: {
     DCA: '0xf37be40582a0f913c68e3b89f70a2e3e4e48752038b06833935c804a4274841f',
+    EVENTS_DCA:
+      '0x3dbe7f8a980a1b668dc72b8a39453a29595bb82bd6503b256be4b01c29e9c9a4',
     ADAPTERS:
       '0xae944b93ff026d699a9a4e766ffa60be7b22197b8069ca4fa2aac15cfa3ef652',
   },
   testnet: {
     DCA: '0xdc0d29408c946eacd2e175639957fe8a9095f2cbbf222d15f9a77fc44413120c',
+    EVENTS_DCA:
+      '0x3dbe7f8a980a1b668dc72b8a39453a29595bb82bd6503b256be4b01c29e9c9a4',
     ADAPTERS:
       '0x559031b01a343fb8950a4142e0fe9667231f5283dba6334c9fc6b7ebf32222cf',
   },
