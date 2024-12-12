@@ -14,5 +14,5 @@ export function buildEvent(module: string, event: string) {
 }
 
 export function buildNewEvent(module: string, event: string) {
-  return `${PACKAGE}::events_${module}::${event}::new`;
+  return `${PACKAGE}::events_${module}::${event}`;
 }
