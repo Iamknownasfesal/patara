@@ -86,7 +86,7 @@ export class DcaSDK {
         tx.splitCoins(tx.gas, [
           tx.pure.u64(
             BigNumber(0.01)
-              .multipliedBy(SUI_DECIMALS)
+              .multipliedBy(10 ** SUI_DECIMALS)
               .multipliedBy(numberOfOrders)
               .toNumber()
           ),
