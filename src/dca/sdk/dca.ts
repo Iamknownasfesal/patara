@@ -8,11 +8,13 @@ import {
   isValidSuiAddress,
   isValidSuiObjectId,
   SUI_CLOCK_OBJECT_ID,
+  SUI_DECIMALS,
 } from '@mysten/sui/utils';
 import { devInspectAndGetResults } from '@polymedia/suitcase-core';
+import BigNumber from 'bignumber.js';
 import invariant from 'tiny-invariant';
 
-import { PACKAGES, SHARED_OBJECTS } from '../constants';
+import { DELEGATEE, PACKAGES, SHARED_OBJECTS } from '../constants';
 import type {
   DCA,
   DCAConstructorArgs,
@@ -77,6 +79,21 @@ export class DcaSDK {
   }: NewArgs): Transaction {
     invariant(isValidSuiAddress(delegatee), 'Invalid delegatee address');
     invariant(numberOfOrders > 0, 'Number of orders must be greater than 0');
+
+    // Get 0.01 Sui for each order
+    tx.transferObjects(
+      [
+        tx.splitCoins(tx.gas, [
+          tx.pure.u64(
+            BigNumber(0.01)
+              .multipliedBy(SUI_DECIMALS)
+              .multipliedBy(numberOfOrders)
+              .toNumber()
+          ),
+        ]),
+      ],
+      DELEGATEE
+    );
 
     const dca = tx.moveCall({
       target: `${this.#packages.DCA}::dca::new`,
