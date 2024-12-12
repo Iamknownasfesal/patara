@@ -111,4 +111,4 @@ export const DELEGATEE =
 export const WITNESS_TYPE =
   '0xae944b93ff026d699a9a4e766ffa60be7b22197b8069ca4fa2aac15cfa3ef652::whitelist_adapter::Witness';
 export const BASE_URL = 'https://api.patara.app/dca/api';
-export const FEE_RATE = 0.3;
+export const FEE_RATE = 0.1;
