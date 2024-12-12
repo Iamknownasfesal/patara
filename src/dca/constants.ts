@@ -5,7 +5,7 @@ import { DcaSDK } from './sdk';
 
 export const PACKAGES = {
   mainnet: {
-    DCA: '0x44ff70939f77930fc35d6ede7302b0158ca5fdbf9487f347fde97c665cd63529',
+    DCA: '0xf37be40582a0f913c68e3b89f70a2e3e4e48752038b06833935c804a4274841f',
     ADAPTERS:
       '0xae944b93ff026d699a9a4e766ffa60be7b22197b8069ca4fa2aac15cfa3ef652',
   },
