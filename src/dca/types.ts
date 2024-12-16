@@ -8,6 +8,7 @@ export const DCAOObjectsSchema = z.array(
     _id: z.string(),
     id: z.string(),
     owner: z.string(),
+    receiver: z.string().optional(),
     delegatee: z.string(),
     every: z.number(),
     orderCount: z.number(),
@@ -72,6 +73,7 @@ export type DCAParams = {
   coinOutType: string;
   min?: bigint;
   max?: bigint;
+  receiver?: string;
 };
 
 export type StopAndDestroyParams = {

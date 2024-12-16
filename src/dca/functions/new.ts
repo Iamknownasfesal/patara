@@ -37,6 +37,7 @@ export async function newDCA({
   coinOutType,
   min,
   max,
+  receiver,
 }: DCAParams): Promise<Transaction> {
   const transaction = new Transaction();
   const coinInArg = await prepareCoinIn(
@@ -60,6 +61,7 @@ export async function newDCA({
     tx: transaction,
     fee: FEE_RATE,
     witnessType: WITNESS_TYPE,
+    receiver: receiver ?? address,
   });
 
   return transaction;
