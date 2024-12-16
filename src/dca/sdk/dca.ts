@@ -76,6 +76,7 @@ export class DcaSDK {
     min = 0n,
     fee,
     delegatee,
+    receiver,
   }: NewArgs): Transaction {
     invariant(isValidSuiAddress(delegatee), 'Invalid delegatee address');
     invariant(numberOfOrders > 0, 'Number of orders must be greater than 0');
@@ -96,7 +97,7 @@ export class DcaSDK {
     );
 
     const dca = tx.moveCall({
-      target: `${this.#packages.DCA}::dca::new`,
+      target: `${this.#packages.DCA}::dca::new_v2`,
       typeArguments: [coinInType, coinOutType, witnessType],
       arguments: [
         tx.object(this.#sharedObjects.TRADE_POLICY),
@@ -109,6 +110,7 @@ export class DcaSDK {
         tx.pure.u64(max),
         tx.pure.u64(fee ? BigInt(fee * 1e7) : this.defaultFee),
         tx.pure.address(delegatee),
+        tx.pure.address(receiver),
       ],
     });
 

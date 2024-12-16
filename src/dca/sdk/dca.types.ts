@@ -45,6 +45,7 @@ export interface NewArgs extends MaybeTx {
   max?: bigint;
   min?: bigint;
   fee?: number;
+  receiver: string;
   delegatee: string;
   witnessType: WitnessWithNetwork[keyof WitnessWithNetwork];
 }
