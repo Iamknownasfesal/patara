@@ -1,6 +1,8 @@
 import { Inputs } from '@mysten/sui/transactions';
 
 export const PACKAGE =
+  '0x8ddd1b220d6102f90af76422b9fcdd2f43eafb72cece36a367746d280f76208f';
+export const FARM_EVENTS_PACKAGE =
   '0xea8a199482202e3b001846f5189c56273a637d15fabe5053039c7aa3f0a353c8';
 export const EVENTS_PACKAGE =
   '0x72b79165ebc2a35e9166168b952c31aafc1531b73bc29c471dc4944b0054b88e';

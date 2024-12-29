@@ -3,7 +3,11 @@ import type {
   TransactionObjectArgument,
 } from '@mysten/sui/transactions';
 
-import { EVENTS_PACKAGE, PACKAGE, SHARED_OBJECTS } from './constants';
+import {
+  EVENTS_PACKAGE,
+  FARM_EVENTS_PACKAGE,
+  SHARED_OBJECTS,
+} from './constants';
 
 export function getFeeConfig(tx: Transaction): TransactionObjectArgument {
   return tx.object(SHARED_OBJECTS.FEE_CONFIG);
@@ -14,5 +18,5 @@ export function buildEvent(module: string, event: string) {
 }
 
 export function buildNewEvent(module: string, event: string) {
-  return `${PACKAGE}::events_${module}::${event}`;
+  return `${FARM_EVENTS_PACKAGE}::events_${module}::${event}`;
 }
