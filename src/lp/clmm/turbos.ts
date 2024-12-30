@@ -91,8 +91,12 @@ export class TurbosCLMM extends GenericCLMM {
       )
       .toString();
 
-    const priceA = new Decimal(amountA).mul(currentPrice);
-    const priceB = amountB;
+    const priceA = new Decimal(
+      this.scaleDown(amountA.toString(), coinA.decimals)
+    ).mul(currentPrice);
+    const priceB = new Decimal(
+      this.scaleDown(amountB.toString(), coinB.decimals)
+    );
     const totalPrice = priceA.plus(priceB);
     const ratioA = new Decimal(priceA).div(totalPrice).mul(100);
     const ratioB = new Decimal(100).minus(ratioA);
