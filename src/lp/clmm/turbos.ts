@@ -111,13 +111,8 @@ export class TurbosCLMM extends GenericCLMM {
         ? amountA.div(ratioB).toFixed(0)
         : amountB.div(ratioA).toFixed(0);
 
-      const coinInType = autoConvert.quote
-        ? this.pool?.coin_a
-        : this.pool?.coin_b;
-
-      const coinOutType = autoConvert.quote
-        ? this.pool?.coin_b
-        : this.pool?.coin_a;
+      const coinInType = autoConvert.quote ? coinTypeA : coinTypeB;
+      const coinOutType = autoConvert.quote ? coinTypeB : coinTypeA;
 
       const route = await this.aftermathInstance
         .Router()
