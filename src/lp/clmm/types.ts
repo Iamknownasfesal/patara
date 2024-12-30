@@ -12,6 +12,11 @@ export type CreatePositionArgs = {
   tickLower: number;
   tickUpper: number;
   slippage: number;
+  autoConvert: {
+    active: boolean;
+    base: boolean;
+    quote: boolean;
+  };
 };
 
 export type QuoteCreatePositionArgs = {
