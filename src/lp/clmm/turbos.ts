@@ -50,7 +50,7 @@ export class TurbosCLMM extends GenericCLMM {
     this.sdk = new TurbosSdk(Network.mainnet, this.client);
     this.poolInstance = new PoolClass(this.sdk);
     this.nftInstance = new NFTClass(this.sdk);
-    this.aftermathInstance = new Aftermath(Network.mainnet);
+    this.aftermathInstance = new Aftermath('MAINNET');
   }
 
   async createPosition(args: CreatePositionArgs): Promise<Transaction> {
