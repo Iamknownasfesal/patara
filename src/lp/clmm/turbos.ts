@@ -108,8 +108,8 @@ export class TurbosCLMM extends GenericCLMM {
 
     if (autoConvert.active) {
       const coinInAmount = autoConvert.quote
-        ? amountA.div(ratioB).toString()
-        : amountB.div(ratioA).toString();
+        ? amountA.div(ratioB).toFixed(0)
+        : amountB.div(ratioA).toFixed(0);
 
       const coinInType = autoConvert.quote
         ? this.pool?.coin_a
