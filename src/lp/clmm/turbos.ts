@@ -200,8 +200,6 @@ export class TurbosCLMM extends GenericCLMM {
         // amount_min
         txb.pure.u64(this.getMinimumAmountBySlippage(amountA, slippage)),
         txb.pure.u64(this.getMinimumAmountBySlippage(amountB, slippage)),
-        // recipient
-        txb.pure.address(walletAddress),
         // deadline
         txb.pure.u64(Date.now() + ONE_MINUTE),
         // clock
