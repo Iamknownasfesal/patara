@@ -71,17 +71,14 @@ export class TurbosCLMM extends GenericCLMM {
 
     const contract = await this.sdk.contract.getConfig();
 
-    const typeArguments = await this.sdk.pool.getPoolTypeArguments(
+    const [coinTypeA, coinTypeB] = await this.sdk.pool.getPoolTypeArguments(
       this.objectId
     );
 
-    const coins = await getMultipleCoinMetadataAll([
-      this.pool.coin_a,
-      this.pool.coin_b,
-    ]);
+    const coins = await getMultipleCoinMetadataAll([coinTypeA, coinTypeB]);
 
-    const coinA = coins.coins.find((c) => c.type === this.pool?.coin_a);
-    const coinB = coins.coins.find((c) => c.type === this.pool?.coin_b);
+    const coinA = coins.coins.find((c) => c.type === coinTypeA);
+    const coinB = coins.coins.find((c) => c.type === coinTypeB);
 
     invariant(coinA, 'Coin A not found');
     invariant(coinB, 'Coin B not found');
@@ -179,7 +176,7 @@ export class TurbosCLMM extends GenericCLMM {
 
     const [positionNft, exceedCoinA, exceedCoinB] = await txb.moveCall({
       target: `${contract.PackageId}::position_manager::mint_with_return_`,
-      typeArguments: typeArguments,
+      typeArguments: [coinTypeA, coinTypeB],
       arguments: [
         // pool
         txb.object(this.objectId),
