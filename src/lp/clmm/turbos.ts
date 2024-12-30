@@ -173,7 +173,7 @@ export class TurbosCLMM extends GenericCLMM {
     invariant(coinAObject, 'Coin A object not found');
     invariant(coinBObject, 'Coin B object not found');
 
-    const [positionNft, exceedCoinA, exceedCoinB] = await txb.moveCall({
+    const [positionNft, exceedCoinA, exceedCoinB] = txb.moveCall({
       target: `${contract.PackageId}::position_manager::mint_with_return_`,
       typeArguments: [coinTypeA, coinTypeB],
       arguments: [
@@ -184,9 +184,11 @@ export class TurbosCLMM extends GenericCLMM {
         // coins
         txb.makeMoveVec({
           elements: [coinAObject],
+          type: `0x2::coin::Coin<${coinTypeA}>`,
         }),
         txb.makeMoveVec({
           elements: [coinBObject],
+          type: `0x2::coin::Coin<${coinTypeB}>`,
         }),
         // tick_lower_index
         txb.pure.u32(Number(Math.abs(tickLower).toFixed(0))),
