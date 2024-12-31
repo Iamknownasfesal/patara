@@ -109,6 +109,9 @@ export class TurbosCLMM extends GenericCLMM {
       const coinInAmount = autoConvert.quote
         ? amountA.div(ratioB).toFixed(0)
         : amountB.div(ratioA).toFixed(0);
+      const leftAmountAfterSwap = autoConvert.quote
+        ? amountA.div(ratioA).toFixed(0)
+        : amountB.div(ratioB).toFixed(0);
 
       const coinInType = autoConvert.quote ? coinTypeA : coinTypeB;
       const coinOutType = autoConvert.quote ? coinTypeB : coinTypeA;
@@ -145,11 +148,11 @@ export class TurbosCLMM extends GenericCLMM {
       amountA = new Decimal(
         autoConvert.quote
           ? route.coinOut.amount.toString()
-          : route.coinIn.amount.toString()
+          : leftAmountAfterSwap
       );
       amountB = new Decimal(
         autoConvert.quote
-          ? route.coinIn.amount.toString()
+          ? leftAmountAfterSwap
           : route.coinOut.amount.toString()
       );
     } else {
