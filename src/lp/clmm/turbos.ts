@@ -90,11 +90,20 @@ export class TurbosCLMM extends GenericCLMM {
       )
       .toString();
 
+    const [bigAmountA, bigAmountB] = this.sdk.pool.getTokenAmountsFromLiquidity(
+      {
+        liquidity: new BN(this.pool.liquidity),
+        currentSqrtPrice: new BN(this.pool.sqrt_price),
+        lowerSqrtPrice: this.sdk.math.tickIndexToSqrtPriceX64(tickLower),
+        upperSqrtPrice: this.sdk.math.tickIndexToSqrtPriceX64(tickUpper),
+      }
+    );
+
     const priceA = new Decimal(
-      this.scaleDown(amountA.toString(), coinA.decimals)
+      this.scaleDown(bigAmountA.toString(), coinA.decimals)
     ).mul(currentPrice);
     const priceB = new Decimal(
-      this.scaleDown(amountB.toString(), coinB.decimals)
+      this.scaleDown(bigAmountB.toString(), coinB.decimals)
     );
     const totalPrice = priceA.plus(priceB);
     const ratioA = new Decimal(priceA).div(totalPrice).mul(100);
