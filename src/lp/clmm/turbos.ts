@@ -71,9 +71,8 @@ export class TurbosCLMM extends GenericCLMM {
 
     const contract = await this.sdk.contract.getConfig();
 
-    const [coinTypeA, coinTypeB] = await this.sdk.pool.getPoolTypeArguments(
-      this.objectId
-    );
+    const [coinTypeA, coinTypeB, feeType] =
+      await this.sdk.pool.getPoolTypeArguments(this.objectId);
 
     const coins = await getMultipleCoinMetadataAll([coinTypeA, coinTypeB]);
 
@@ -175,7 +174,7 @@ export class TurbosCLMM extends GenericCLMM {
 
     const [positionNft, exceedCoinA, exceedCoinB] = txb.moveCall({
       target: `${contract.PackageId}::position_manager::mint_with_return_`,
-      typeArguments: [coinTypeA, coinTypeB],
+      typeArguments: [coinTypeA, coinTypeB, feeType],
       arguments: [
         // pool
         txb.object(this.objectId),
