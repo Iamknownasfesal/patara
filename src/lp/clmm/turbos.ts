@@ -115,12 +115,13 @@ export class TurbosCLMM extends GenericCLMM {
       coinBObject: TransactionArgument | undefined;
 
     if (autoConvert.active) {
-      const coinInAmount = autoConvert.quote
-        ? amountA.mul(ratioA.div(100)).toFixed(0)
-        : amountB.mul(ratioB.div(100)).toFixed(0);
-      const leftAmountAfterSwap = autoConvert.quote
-        ? amountA.mul(ratioB.div(100)).toFixed(0)
-        : amountB.mul(ratioA.div(100)).toFixed(0);
+      const keepAmount = autoConvert.quote
+        ? amountA.mul(ratioA.div(100))
+        : amountB.mul(ratioB.div(100));
+
+      const swapAmount = autoConvert.quote
+        ? amountA.minus(keepAmount)
+        : amountB.minus(keepAmount);
 
       const coinInType = autoConvert.quote ? coinTypeA : coinTypeB;
       const coinOutType = autoConvert.quote ? coinTypeB : coinTypeA;
@@ -130,7 +131,7 @@ export class TurbosCLMM extends GenericCLMM {
         .getCompleteTradeRouteGivenAmountIn({
           coinInType,
           coinOutType,
-          coinInAmount: BigInt(coinInAmount),
+          coinInAmount: BigInt(swapAmount.toFixed(0)),
         });
 
       const coinInId = await getCoinForInput(
@@ -148,22 +149,22 @@ export class TurbosCLMM extends GenericCLMM {
           slippage,
           walletAddress,
           tx: txb,
-          coinInId: txb.splitCoins(coinInId, [coinInAmount]),
+          coinInId: txb.splitCoins(coinInId, [swapAmount.toFixed(0)]),
         });
 
       txb = endingTransaction;
-      coinAObject = autoConvert.quote ? coinInId : coinOutId;
-      coinBObject = autoConvert.quote ? coinOutId : coinInId;
-      amountA = new Decimal(
-        autoConvert.quote
-          ? route.coinOut.amount.toString()
-          : leftAmountAfterSwap
-      );
-      amountB = new Decimal(
-        autoConvert.quote
-          ? leftAmountAfterSwap
-          : route.coinOut.amount.toString()
-      );
+
+      if (autoConvert.quote) {
+        coinAObject = coinInId;
+        coinBObject = coinOutId;
+        amountA = keepAmount;
+        amountB = new Decimal(route.coinOut.amount.toString());
+      } else {
+        coinAObject = coinOutId;
+        coinBObject = coinInId;
+        amountA = new Decimal(route.coinOut.amount.toString());
+        amountB = keepAmount;
+      }
     } else {
       coinAObject = await getCoinForInput(
         this.client,
