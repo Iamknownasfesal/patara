@@ -164,6 +164,13 @@ export class TurbosCLMM extends GenericCLMM {
           ? leftAmountAfterSwap
           : route.coinOut.amount.toString()
       );
+
+      console.log(ratioA.toString());
+      console.log(ratioB.toString());
+      console.log(amountA.toString());
+      console.log(amountB.toString());
+      console.log(coinInAmount);
+      console.log(leftAmountAfterSwap);
     } else {
       coinAObject = await getCoinForInput(
         this.client,
