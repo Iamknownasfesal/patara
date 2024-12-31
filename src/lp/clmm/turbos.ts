@@ -211,8 +211,16 @@ export class TurbosCLMM extends GenericCLMM {
         txb.pure.u64(amountA.toFixed(0)),
         txb.pure.u64(amountB.toFixed(0)),
         // amount_min
-        txb.pure.u64(this.getMinimumAmountBySlippage(amountA, slippage)),
-        txb.pure.u64(this.getMinimumAmountBySlippage(amountB, slippage)),
+        txb.pure.u64(
+          args.autoConvert.active
+            ? 0
+            : this.getMinimumAmountBySlippage(amountA, slippage)
+        ),
+        txb.pure.u64(
+          args.autoConvert.active
+            ? 0
+            : this.getMinimumAmountBySlippage(amountB, slippage)
+        ),
         // deadline
         txb.pure.u64(Date.now() + ONE_MINUTE),
         // clock
