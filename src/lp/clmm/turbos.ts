@@ -116,11 +116,11 @@ export class TurbosCLMM extends GenericCLMM {
 
     if (autoConvert.active) {
       const coinInAmount = autoConvert.quote
-        ? amountA.div(ratioB).toFixed(0)
-        : amountB.div(ratioA).toFixed(0);
+        ? amountA.mul(ratioA.div(100)).toFixed(0)
+        : amountB.mul(ratioB.div(100)).toFixed(0);
       const leftAmountAfterSwap = autoConvert.quote
-        ? amountA.div(ratioA).toFixed(0)
-        : amountB.div(ratioB).toFixed(0);
+        ? amountA.mul(ratioB.div(100)).toFixed(0)
+        : amountB.mul(ratioA.div(100)).toFixed(0);
 
       const coinInType = autoConvert.quote ? coinTypeA : coinTypeB;
       const coinOutType = autoConvert.quote ? coinTypeB : coinTypeA;
@@ -164,13 +164,6 @@ export class TurbosCLMM extends GenericCLMM {
           ? leftAmountAfterSwap
           : route.coinOut.amount.toString()
       );
-
-      console.log(ratioA.toString());
-      console.log(ratioB.toString());
-      console.log(amountA.toString());
-      console.log(amountB.toString());
-      console.log(coinInAmount);
-      console.log(leftAmountAfterSwap);
     } else {
       coinAObject = await getCoinForInput(
         this.client,
