@@ -226,16 +226,6 @@ export class TurbosCLMM extends GenericCLMM {
     txb.transferObjects([positionNft, exceedCoinA, exceedCoinB], walletAddress);
 
     return txb;
-
-    // return this.poolInstance.addLiquidity({
-    //   address: walletAddress,
-    //   amountA: amountsIn.base.toString(),
-    //   amountB: amountsIn.quote.toString(),
-    //   pool: this.objectId,
-    //   slippage,
-    //   tickLower,
-    //   tickUpper,
-    // });
   }
 
   async increasePosition(args: IncreasePositionArgs): Promise<Transaction> {
@@ -642,6 +632,10 @@ export class TurbosCLMM extends GenericCLMM {
     amount: Decimal.Value,
     slippage: Decimal.Value
   ): string {
+    if (slippage === 100) {
+      return '0';
+    }
+
     const origin = new Decimal(amount);
     const ratio = new Decimal(1).minus(new Decimal(slippage).div(100));
     if (ratio.lte(0) || ratio.gt(1)) {
