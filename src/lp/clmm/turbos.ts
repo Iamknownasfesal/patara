@@ -169,14 +169,14 @@ export class TurbosCLMM extends GenericCLMM {
       coinAObject = await getCoinForInput(
         this.client,
         walletAddress,
-        this.pool?.coin_a,
+        coinTypeA,
         amountA.toString(),
         txb
       );
       coinBObject = await getCoinForInput(
         this.client,
         walletAddress,
-        this.pool?.coin_b,
+        coinTypeB,
         amountB.toString(),
         txb
       );
