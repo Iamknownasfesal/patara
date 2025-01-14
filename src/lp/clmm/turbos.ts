@@ -146,7 +146,7 @@ export class TurbosCLMM extends GenericCLMM {
         .Router()
         .addTransactionForCompleteTradeRoute({
           completeRoute: route,
-          slippage,
+          slippage: 0.05,
           walletAddress,
           tx: txb,
           coinInId: txb.splitCoins(coinInId, [swapAmount.toFixed(0)]),
