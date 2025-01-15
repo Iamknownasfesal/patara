@@ -229,14 +229,26 @@ export class DcaSDK {
     tx = new Transaction(),
     request,
     coinOut,
-    whitelist,
+    nextExecutorAddress,
   }: SwapWhitelistEndArgs) {
     invariant(isValidSuiObjectId(dca), 'Invalid DCA id');
 
     tx.moveCall({
+      target: `0xd1bb6bb53fabe4a384ce699dca9ad14e00b522b1929bfdc143b33e31d5b85094::whitelist_adapter::whitelist_add`,
+      arguments: [
+        tx.object(this.#sharedObjects.WHITELIST_MUT),
+        tx.pure.address(nextExecutorAddress),
+      ],
+    });
+
+    tx.moveCall({
       target: `0xd1bb6bb53fabe4a384ce699dca9ad14e00b522b1929bfdc143b33e31d5b85094::whitelist_adapter::swap`,
       typeArguments: [coinOutType],
-      arguments: [whitelist, request as TransactionArgument, coinOut],
+      arguments: [
+        tx.object(this.#sharedObjects.WHITELIST),
+        request as TransactionArgument,
+        coinOut,
+      ],
     });
 
     tx.moveCall({
