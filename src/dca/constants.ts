@@ -8,6 +8,8 @@ export const PACKAGES = {
     DCA: '0x0db109c281e8ab325493cb5b47425f1e32082358e28fcb2366c01e7929690cfe',
     EVENTS_DCA:
       '0x3dbe7f8a980a1b668dc72b8a39453a29595bb82bd6503b256be4b01c29e9c9a4',
+    NEW_DCA:
+      '0x99d090af6170e312ca33bb9a8afea266118bdf4d3e23fc22cb26f8012c500fd8',
     ADAPTERS:
       '0xae944b93ff026d699a9a4e766ffa60be7b22197b8069ca4fa2aac15cfa3ef652',
   },
@@ -15,6 +17,8 @@ export const PACKAGES = {
     DCA: '0xdc0d29408c946eacd2e175639957fe8a9095f2cbbf222d15f9a77fc44413120c',
     EVENTS_DCA:
       '0x3dbe7f8a980a1b668dc72b8a39453a29595bb82bd6503b256be4b01c29e9c9a4',
+    NEW_DCA:
+      '0x99d090af6170e312ca33bb9a8afea266118bdf4d3e23fc22cb26f8012c500fd8',
     ADAPTERS:
       '0x559031b01a343fb8950a4142e0fe9667231f5283dba6334c9fc6b7ebf32222cf',
   },

@@ -97,7 +97,7 @@ export class DcaSDK {
     );
 
     const dca = tx.moveCall({
-      target: `${this.#packages.DCA}::dca::new_v2`,
+      target: `${this.#packages.NEW_DCA}::dca::new_v2`,
       typeArguments: [coinInType, coinOutType, witnessType],
       arguments: [
         tx.object(this.#sharedObjects.TRADE_POLICY),
@@ -115,7 +115,7 @@ export class DcaSDK {
     });
 
     tx.moveCall({
-      target: `${this.#packages.DCA}::dca::share`,
+      target: `${this.#packages.NEW_DCA}::dca::share`,
       typeArguments: [coinInType, coinOutType],
       arguments: [tx.object(dca)],
     });
@@ -133,7 +133,7 @@ export class DcaSDK {
     const tx = new Transaction();
 
     tx.moveCall({
-      target: `${this.#packages.DCA}::dca::active`,
+      target: `${this.#packages.NEW_DCA}::dca::active`,
       typeArguments: [coinInType, coinOutType],
       arguments: [tx.object(dca)],
     });
@@ -159,7 +159,7 @@ export class DcaSDK {
     const tx = new Transaction();
 
     tx.moveCall({
-      target: `${this.#packages.DCA}::dca::stop`,
+      target: `${this.#packages.NEW_DCA}::dca::stop`,
       typeArguments: [coinInType, coinOutType],
       arguments: [tx.object(dca)],
     });
@@ -173,7 +173,7 @@ export class DcaSDK {
     const tx = new Transaction();
 
     tx.moveCall({
-      target: `${this.#packages.DCA}::dca::destroy`,
+      target: `${this.#packages.NEW_DCA}::dca::destroy`,
       typeArguments: [coinInType, coinOutType],
       arguments: [tx.object(dca)],
     });
@@ -187,13 +187,13 @@ export class DcaSDK {
     const tx = new Transaction();
 
     tx.moveCall({
-      target: `${this.#packages.DCA}::dca::stop`,
+      target: `${this.#packages.NEW_DCA}::dca::stop`,
       typeArguments: [coinInType, coinOutType],
       arguments: [tx.object(dca)],
     });
 
     tx.moveCall({
-      target: `${this.#packages.DCA}::dca::destroy`,
+      target: `${this.#packages.NEW_DCA}::dca::destroy`,
       typeArguments: [coinInType, coinOutType],
       arguments: [tx.object(dca)],
     });
@@ -210,7 +210,7 @@ export class DcaSDK {
     invariant(isValidSuiObjectId(dca), 'Invalid DCA id');
 
     const [request, coinIn] = tx.moveCall({
-      target: `${this.#packages.DCA}::dca::request`,
+      target: `${this.#packages.NEW_DCA}::dca::request`,
       typeArguments: [coinInType, coinOutType],
       arguments: [tx.object(dca)],
     });
@@ -234,29 +234,18 @@ export class DcaSDK {
     invariant(isValidSuiObjectId(dca), 'Invalid DCA id');
 
     tx.moveCall({
-      target: `0xd1bb6bb53fabe4a384ce699dca9ad14e00b522b1929bfdc143b33e31d5b85094::whitelist_adapter::whitelist_add`,
-      arguments: [
-        tx.object(this.#sharedObjects.WHITELIST_MUT),
-        tx.pure.address(nextExecutorAddress),
-      ],
-    });
-
-    tx.moveCall({
-      target: `0xd1bb6bb53fabe4a384ce699dca9ad14e00b522b1929bfdc143b33e31d5b85094::whitelist_adapter::swap`,
+      target: `${this.#packages.NEW_DCA}::dca::join`,
       typeArguments: [coinOutType],
-      arguments: [
-        tx.object(this.#sharedObjects.WHITELIST),
-        request as TransactionArgument,
-        coinOut,
-      ],
+      arguments: [request as TransactionArgument, coinOut],
     });
 
     tx.moveCall({
-      target: `${this.#packages.DCA}::dca::confirm`,
+      target: `${this.#packages.NEW_DCA}::dca::confirm_trader`,
       typeArguments: [coinInType, coinOutType],
       arguments: [
         tx.object(dca),
         tx.object(SUI_CLOCK_OBJECT_ID),
+        tx.pure.address(nextExecutorAddress),
         request as TransactionArgument,
       ],
     });
