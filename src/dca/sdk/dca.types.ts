@@ -63,6 +63,7 @@ export interface SwapWhitelistStartArgs extends DcaArgs, MaybeTx {}
 export interface SwapWhitelistEndArgs extends DcaArgs, MaybeTx {
   coinOut: TransactionArgument;
   request: NestedResult;
+  whitelist: TransactionArgument;
 }
 
 export interface DCA {
