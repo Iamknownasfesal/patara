@@ -233,7 +233,7 @@ export class DcaSDK {
     invariant(isValidSuiObjectId(dca), 'Invalid DCA id');
 
     tx.moveCall({
-      target: `${this.#packages.ADAPTERS}::whitelist_adapter::swap`,
+      target: `0xd1bb6bb53fabe4a384ce699dca9ad14e00b522b1929bfdc143b33e31d5b85094::whitelist_adapter::swap`,
       typeArguments: [coinOutType],
       arguments: [
         tx.object(this.#sharedObjects.WHITELIST),

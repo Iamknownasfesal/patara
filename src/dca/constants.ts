@@ -9,7 +9,7 @@ export const PACKAGES = {
     EVENTS_DCA:
       '0x3dbe7f8a980a1b668dc72b8a39453a29595bb82bd6503b256be4b01c29e9c9a4',
     ADAPTERS:
-      '0xd1bb6bb53fabe4a384ce699dca9ad14e00b522b1929bfdc143b33e31d5b85094',
+      '0xae944b93ff026d699a9a4e766ffa60be7b22197b8069ca4fa2aac15cfa3ef652',
   },
   testnet: {
     DCA: '0xdc0d29408c946eacd2e175639957fe8a9095f2cbbf222d15f9a77fc44413120c',
