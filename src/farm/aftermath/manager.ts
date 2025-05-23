@@ -92,14 +92,16 @@ export class AftermathFarmManager {
     const farms = await this.getPools();
     const positions = await this.getPositions(address, farms);
 
-    return farms.map((farm) => ({
-      pool: farm,
-      positions: positions.filter(
-        (position) =>
-          position.stakedPosition.stakedPosition.stakingPoolObjectId ===
-          farm.stakingPool.stakingPool.objectId
-      ),
-    }));
+    return farms
+      .map((farm) => ({
+        pool: farm,
+        positions: positions.filter(
+          (position) =>
+            position.stakedPosition.stakedPosition.stakingPoolObjectId ===
+            farm.stakingPool.stakingPool.objectId
+        ),
+      }))
+      .filter((pool) => pool.positions.length > 0);
   }
 
   getAftermathFarm(farm: FarmsStakingPool): AftermathFarm {

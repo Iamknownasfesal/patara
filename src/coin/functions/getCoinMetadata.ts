@@ -4,30 +4,11 @@ import {
   PATARA_METADATA_API_BASE_URL,
   PATARA_METADATA_API_ENDPOINTS,
 } from '../constants';
-
-const CoinSchema = z.object({
-  type: z.string(),
-  decimals: z.number(),
-  description: z.string(),
-  iconUrl: z.string(),
-  name: z.string(),
-  symbol: z.string(),
-  verified: z.boolean(),
-  tags: z.array(z.string()),
-});
-
-const MultipleCoinMetadataResponseWithPaginationSchema = z.object({
-  coins: z.array(CoinSchema),
-  pagination: z.object({
-    limit: z.number(),
-    offset: z.number(),
-    total: z.number(),
-  }),
-});
-
-const MultipleCoinMetadataResponseSchema = z.object({
-  coins: z.array(CoinSchema),
-});
+import {
+  CoinSchema,
+  MultipleCoinMetadataResponseSchema,
+  MultipleCoinMetadataResponseWithPaginationSchema,
+} from '../schemas';
 
 async function fetchAndParse(url: string, schema: z.ZodSchema) {
   const response = await fetch(url);

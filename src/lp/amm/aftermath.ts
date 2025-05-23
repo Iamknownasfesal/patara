@@ -46,13 +46,7 @@ export class AftermathAMM extends GenericAMM {
 
     const expectedLpRatio = Casting.numberToFixedBigInt(lpRatio);
 
-    const coinIds = await getCoinsForInput(
-      this.client,
-      walletAddress,
-      coinTypes,
-      coinAmounts,
-      tx
-    );
+    const coinIds = getCoinsForInput(coinTypes, coinAmounts);
 
     ammEvent(
       AmmWay.ADD_LIQUIDITY,
@@ -102,13 +96,7 @@ export class AftermathAMM extends GenericAMM {
 
     const coinTypes = Object.keys(this.pool.pool.coins);
 
-    const lpCoinId = await getCoinForInput(
-      this.client,
-      walletAddress,
-      this.pool.pool.lpCoinType,
-      amountIn,
-      tx
-    );
+    const lpCoinId = getCoinForInput(this.pool.pool.lpCoinType, amountIn);
 
     if (this.pool.pool.daoFeePoolObject) {
       const withdrawnCoinIds = aftermathApi

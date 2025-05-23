@@ -46,13 +46,7 @@ export class Suilend {
 
     const transaction = new Transaction();
 
-    const coin = await getCoinForInput(
-      this.suiClient,
-      address,
-      coinType,
-      amount,
-      transaction
-    );
+    const coin = getCoinForInput(coinType, amount);
 
     lendEvent(LendWay.LEND, coin, coinType, transaction);
 
@@ -132,13 +126,7 @@ export class Suilend {
 
     const transaction = new Transaction();
 
-    const coin = await getCoinForInput(
-      this.suiClient,
-      address,
-      coinType,
-      amount,
-      transaction
-    );
+    const coin = getCoinForInput(coinType, amount);
 
     lendEvent(LendWay.REPAY, coin, coinType, transaction);
 

@@ -3,11 +3,11 @@ import { Transaction } from '@mysten/sui/transactions';
 import { DCASDK } from '../constants';
 import type { StopAndDestroyParams } from '../types';
 
-export async function stopAndDestroy({
+export function stopAndDestroy({
   coinInType,
   coinOutType,
   dca,
-}: StopAndDestroyParams): Promise<Transaction> {
+}: StopAndDestroyParams): Transaction {
   return DCASDK.stopAndDestroy({
     coinInType,
     coinOutType,

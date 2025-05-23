@@ -38,7 +38,9 @@ export class PoolManager {
 
   constructor(client: SuiClient) {
     this.aftermathInstance = new Aftermath('MAINNET');
-    this.turbosInstance = new TurbosSdk(Network.mainnet);
+    this.turbosInstance = new TurbosSdk(Network.mainnet, {
+      url: 'https://fullnode-doubleup.com',
+    });
     this.client = client;
   }
 

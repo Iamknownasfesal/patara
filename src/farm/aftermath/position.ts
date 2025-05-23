@@ -31,12 +31,9 @@ export class AftermathFarmPosition {
 
     const aftermathApi = await this.getAftermathApi();
 
-    const stakeCoinId = await getCoinForInput(
-      this.provider,
-      address,
+    const stakeCoinId = getCoinForInput(
       this.stakedPosition.stakedPosition.stakeCoinType,
-      depositAmount,
-      tx
+      depositAmount
     );
 
     farmEvent(

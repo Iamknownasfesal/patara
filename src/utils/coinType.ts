@@ -1,6 +1,4 @@
-import { normalizeStructTag } from '@mysten/sui/utils';
-
-import { SUI_COIN_TYPE } from '../constants';
+import { normalizeStructTag, SUI_TYPE_ARG } from '@mysten/sui/utils';
 
 const SEND_POINTS_S1_COINTYPE =
   '0x34fe4f3c9e450fed4d0a3c587ed842eec5313c30c3cc3c0841247c49425e246b::suilend_point::SUILEND_POINT';
@@ -18,4 +16,4 @@ export const isMayaCoinType = (coinType: string) =>
   normalizeStructTag(coinType) === normalizeStructTag(MAYA_COINTYPE);
 
 export const isSui = (coinType: string) =>
-  normalizeStructTag(coinType) === normalizeStructTag(SUI_COIN_TYPE);
+  normalizeStructTag(coinType) === normalizeStructTag(SUI_TYPE_ARG);

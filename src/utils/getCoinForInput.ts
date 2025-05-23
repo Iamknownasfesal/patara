@@ -1,53 +1,26 @@
-import { SuiClient } from '@mysten/sui/client';
-import type {
-  Transaction,
-  TransactionArgument,
+import {
+  coinWithBalance,
+  type TransactionArgument,
 } from '@mysten/sui/transactions';
 
 import { isSui } from './coinType';
 
-export async function getCoinForInput(
-  client: SuiClient,
-  address: string,
+export function getCoinForInput(
   coinType: string,
-  splitValue: number | string | bigint,
-  transaction: Transaction
-): Promise<TransactionArgument> {
-  const coins = (
-    await client.getCoins({
-      owner: address,
-      coinType,
-    })
-  ).data;
-
-  const mergeCoin = coins[0];
-  if (coins.length > 1 && !isSui(coinType)) {
-    transaction.mergeCoins(
-      transaction.object(mergeCoin.coinObjectId),
-      coins.map((c) => transaction.object(c.coinObjectId)).slice(1)
-    );
-  }
-
-  const [sendCoin] = transaction.splitCoins(
-    isSui(coinType)
-      ? transaction.gas
-      : transaction.object(mergeCoin.coinObjectId),
-    [splitValue]
-  );
-
-  return sendCoin;
+  splitValue: number | string | bigint
+) {
+  return coinWithBalance({
+    balance: BigInt(splitValue),
+    type: coinType,
+    useGasCoin: isSui(coinType),
+  });
 }
 
-export async function getCoinsForInput(
-  client: SuiClient,
-  address: string,
+export function getCoinsForInput(
   coinTypes: string[],
-  splitValues: (number | string | bigint)[],
-  transaction: Transaction
-): Promise<TransactionArgument[]> {
-  return Promise.all(
-    coinTypes.map((coinType, i) =>
-      getCoinForInput(client, address, coinType, splitValues[i], transaction)
-    )
+  splitValues: (number | string | bigint)[]
+): TransactionArgument[] {
+  return coinTypes.map((coinType, i) =>
+    getCoinForInput(coinType, splitValues[i])
   );
 }

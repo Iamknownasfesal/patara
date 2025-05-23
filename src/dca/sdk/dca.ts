@@ -27,6 +27,7 @@ import type {
   SwapWhitelistStartArgs,
 } from './dca.types';
 import { parseDCAObject } from './utils';
+
 export class DcaSDK {
   #client: SuiClient;
   #packages: (typeof PACKAGES)[Network];

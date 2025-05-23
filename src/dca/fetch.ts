@@ -3,11 +3,10 @@ import BigNumber from 'bignumber.js';
 import { getMultipleCoinMetadataAll } from '../coin';
 import type { CoinMetadataMap } from '../types';
 import { BASE_URL } from './constants';
+import { DCAOObjectsSchema, DCAOrderSchema } from './schemas';
 import {
   type DCAObject,
-  DCAOObjectsSchema,
   type DCAOrder,
-  DCAOrderSchema,
   type ParsedDCAObject,
   type ParsedDCAOrder,
 } from './types';

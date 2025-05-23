@@ -134,12 +134,9 @@ export class TurbosCLMM extends GenericCLMM {
           coinInAmount: BigInt(swapAmount.toFixed(0)),
         });
 
-      const coinInId = await getCoinForInput(
-        this.client,
-        walletAddress,
+      const coinInId = getCoinForInput(
         coinInType,
-        autoConvert.quote ? amountA.toString() : amountB.toString(),
-        txb
+        autoConvert.quote ? amountA.toString() : amountB.toString()
       );
 
       const { tx: endingTransaction, coinOutId } = await this.aftermathInstance
@@ -166,20 +163,8 @@ export class TurbosCLMM extends GenericCLMM {
         amountB = keepAmount;
       }
     } else {
-      coinAObject = await getCoinForInput(
-        this.client,
-        walletAddress,
-        coinTypeA,
-        amountA.toString(),
-        txb
-      );
-      coinBObject = await getCoinForInput(
-        this.client,
-        walletAddress,
-        coinTypeB,
-        amountB.toString(),
-        txb
-      );
+      coinAObject = getCoinForInput(coinTypeA, amountA.toString());
+      coinBObject = getCoinForInput(coinTypeB, amountB.toString());
     }
 
     invariant(coinAObject, 'Coin A object not found');
