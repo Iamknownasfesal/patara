@@ -5,7 +5,9 @@ import {
   PATARA_METADATA_API_ENDPOINTS,
 } from '../constants';
 import {
+  CoinDecimalsSchema,
   CoinSchema,
+  MultipleCoinDecimalsResponseSchema,
   MultipleCoinMetadataResponseSchema,
   MultipleCoinMetadataResponseWithPaginationSchema,
 } from '../schemas';
@@ -142,4 +144,23 @@ export async function searchCoinsAll(query: string) {
   }
 
   return { coins: allResults };
+}
+
+export async function getMultipleCoinDecimals(
+  coinTypes: string[]
+): Promise<z.infer<typeof MultipleCoinDecimalsResponseSchema>> {
+  if (coinTypes.length > 20)
+    throw new Error('Maximum of 20 coin types allowed.');
+
+  const url = `${PATARA_METADATA_API_BASE_URL}/${PATARA_METADATA_API_ENDPOINTS.MULTIPLE_COIN_DECIMALS}`;
+  return fetchAndParseWithBody(url, MultipleCoinDecimalsResponseSchema, {
+    types: coinTypes,
+  });
+}
+
+export async function getCoinDecimals(
+  coinType: string
+): Promise<z.infer<typeof CoinDecimalsSchema>> {
+  const url = `${PATARA_METADATA_API_BASE_URL}/${PATARA_METADATA_API_ENDPOINTS.SINGLE_COIN_DECIMALS}/${coinType}`;
+  return fetchAndParse(url, CoinDecimalsSchema);
 }

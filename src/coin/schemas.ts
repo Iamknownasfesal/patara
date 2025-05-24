@@ -23,3 +23,12 @@ export const MultipleCoinMetadataResponseWithPaginationSchema = z.object({
 export const MultipleCoinMetadataResponseSchema = z.object({
   coins: z.array(CoinSchema),
 });
+
+export const CoinDecimalsSchema = z.object({
+  type: z.string(),
+  decimals: z.number(),
+});
+
+export const MultipleCoinDecimalsResponseSchema = z.object({
+  decimals: z.record(z.string(), z.number()),
+});

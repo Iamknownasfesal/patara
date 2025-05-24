@@ -6,4 +6,6 @@ export const PATARA_METADATA_API_ENDPOINTS = {
   MULTIPLE_COIN_METADATA: 'multiple-coin-metadata',
   TAGGED_COINS: 'tagged-coins',
   SEARCH: 'search',
+  MULTIPLE_COIN_DECIMALS: 'multiple-coin-decimals',
+  SINGLE_COIN_DECIMALS: 'coin-decimals',
 } as const;
