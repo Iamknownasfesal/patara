@@ -197,11 +197,8 @@ export class Suilend {
       }
 
       if (coinOuts.length > 1) {
-        const mergedCoin = transaction.mergeCoins(
-          coinOuts[0],
-          coinOuts.slice(1)
-        );
-        transaction.transferObjects([mergedCoin], address);
+        transaction.mergeCoins(coinOuts[0], coinOuts.slice(1));
+        transaction.transferObjects([coinOuts[0]], address);
       } else {
         transaction.transferObjects(coinOuts, address);
       }
