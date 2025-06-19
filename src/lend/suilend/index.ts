@@ -170,7 +170,7 @@ export class Suilend {
 
         if (
           reward.rewardCoinType ===
-          '0x27645957e0260f3c5874c4895c11d2adca6b2c3d60ad4afb805acb635dd46f21::usdc::USDC'
+          '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC'
         ) {
           coinOuts.push(coin);
           continue;
@@ -179,7 +179,7 @@ export class Suilend {
         const route = await router.getCompleteTradeRouteGivenAmountIn({
           coinInType: reward.rewardCoinType,
           coinOutType:
-            '0x27645957e0260f3c5874c4895c11d2adca6b2c3d60ad4afb805acb635dd46f21::usdc::USDC',
+            '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC',
           coinInAmount: reward.coinInAmount,
         });
 
