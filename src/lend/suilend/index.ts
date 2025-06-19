@@ -1,5 +1,8 @@
 import type { SuiClient } from '@mysten/sui/client';
-import { Transaction } from '@mysten/sui/transactions';
+import {
+  Transaction,
+  type TransactionObjectArgument,
+} from '@mysten/sui/transactions';
 import { normalizeStructTag } from '@mysten/sui/utils';
 import { SuiPriceServiceConnection } from '@pythnetwork/pyth-sui-js';
 import {
@@ -17,6 +20,7 @@ import { LendingMarket } from '@suilend/sdk/_generated/suilend/lending-market/st
 import type { PoolReward } from '@suilend/sdk/_generated/suilend/liquidity-mining/structs';
 import type { Reserve } from '@suilend/sdk/_generated/suilend/reserve/structs';
 import * as simulate from '@suilend/sdk/utils/simulate';
+import { Aftermath } from 'aftermath-ts-sdk';
 import BigNumber from 'bignumber.js';
 import invariant from 'tiny-invariant';
 
@@ -140,19 +144,67 @@ export class Suilend {
   async claimRewards(
     address: string,
     obligationOwnerCapId: string,
-    rewards: ClaimRewardsReward[]
+    rewards: (ClaimRewardsReward & { coinInAmount: bigint })[],
+    isUsdc: boolean = false
   ) {
     await this.initialize();
     invariant(this.suilendClient, 'Suilend client not initialized');
 
-    const transaction = new Transaction();
+    let transaction = new Transaction();
+    const coinOuts: TransactionObjectArgument[] = [];
 
-    this.suilendClient.claimRewardsAndSendToUser(
-      address,
-      obligationOwnerCapId,
-      rewards,
-      transaction
-    );
+    if (isUsdc) {
+      const afSdk = new Aftermath('MAINNET');
+      await afSdk.init();
+      const router = afSdk.Router();
+
+      for (const reward of rewards) {
+        const coin = this.suilendClient.claimReward(
+          obligationOwnerCapId,
+          reward.reserveArrayIndex,
+          reward.rewardIndex,
+          reward.rewardCoinType,
+          reward.side,
+          transaction
+        );
+
+        const route = await router.getCompleteTradeRouteGivenAmountIn({
+          coinInType: reward.rewardCoinType,
+          coinOutType:
+            '0x27645957e0260f3c5874c4895c11d2adca6b2c3d60ad4afb805acb635dd46f21::usdc::USDC',
+          coinInAmount: reward.coinInAmount,
+        });
+
+        const { tx, coinOutId } =
+          await router.addTransactionForCompleteTradeRoute({
+            completeRoute: route,
+            slippage: 0.1,
+            tx: transaction,
+            walletAddress: address,
+            coinInId: coin,
+          });
+
+        transaction = tx;
+        coinOuts.push(coinOutId!);
+      }
+
+      if (coinOuts.length > 1) {
+        const mergedCoin = transaction.mergeCoins(
+          coinOuts[0],
+          coinOuts.slice(1)
+        );
+        transaction.transferObjects([mergedCoin], address);
+      } else {
+        transaction.transferObjects(coinOuts, address);
+      }
+    } else {
+      this.suilendClient.claimRewardsAndSendToUser(
+        address,
+        obligationOwnerCapId,
+        rewards,
+        transaction
+      );
+    }
 
     return transaction;
   }

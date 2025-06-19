@@ -146,6 +146,29 @@ export async function searchCoinsAll(query: string) {
   return { coins: allResults };
 }
 
+export async function getMultipleCoinDecimalsAll(
+  coinTypes: string[]
+): Promise<z.infer<typeof MultipleCoinDecimalsResponseSchema>> {
+  const allResults: Record<string, number> = {};
+  const limit = 20;
+
+  for (let i = 0; i < coinTypes.length; i += limit) {
+    const chunk = coinTypes.slice(i, i + limit);
+    const url = `${PATARA_METADATA_API_BASE_URL}/${PATARA_METADATA_API_ENDPOINTS.MULTIPLE_COIN_DECIMALS}`;
+    const result = await fetchAndParseWithBody(
+      url,
+      MultipleCoinDecimalsResponseSchema,
+      {
+        types: chunk,
+      }
+    );
+
+    Object.assign(allResults, result.decimals);
+  }
+
+  return { decimals: allResults };
+}
+
 export async function getMultipleCoinDecimals(
   coinTypes: string[]
 ): Promise<z.infer<typeof MultipleCoinDecimalsResponseSchema>> {
