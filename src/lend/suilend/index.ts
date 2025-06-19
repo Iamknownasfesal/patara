@@ -168,6 +168,14 @@ export class Suilend {
           transaction
         );
 
+        if (
+          reward.rewardCoinType ===
+          '0x27645957e0260f3c5874c4895c11d2adca6b2c3d60ad4afb805acb635dd46f21::usdc::USDC'
+        ) {
+          coinOuts.push(coin);
+          continue;
+        }
+
         const route = await router.getCompleteTradeRouteGivenAmountIn({
           coinInType: reward.rewardCoinType,
           coinOutType:
@@ -178,7 +186,7 @@ export class Suilend {
         const { tx, coinOutId } =
           await router.addTransactionForCompleteTradeRoute({
             completeRoute: route,
-            slippage: 0.1,
+            slippage: 0.01,
             tx: transaction,
             walletAddress: address,
             coinInId: coin,
